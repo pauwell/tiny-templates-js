@@ -28,7 +28,8 @@ As you can see we combine the script-tag with type="text/html". Now we are able 
 that gets ignored by the Browser, so we can parse it ourselves (how convenient).
 
 Together with this easy to read html template we should add an additional javascript object that provides the data.
-<pre>
+
+``` js
 let example_template = {
    name: 'example-template',
    data: {
@@ -36,5 +37,5 @@ let example_template = {
      age: 99
    }
  }
-</pre>
+```
 Now we have successfully created a tiny template. 
