@@ -1,9 +1,6 @@
 <p align="center">
  <img width="150" src="https://rick.cogley.info/img/html5-css3-js-logo.png">
 </p>
-
-<p align="center">Material Design for Vue.js</p>
-
 # tiny-templates-js
 Tiny template engine in Javascript.
 
