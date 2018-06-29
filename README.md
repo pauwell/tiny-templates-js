@@ -3,12 +3,11 @@
 </p>
 
 <h1>tiny-templates-js</h1>
-<small><i>Tiny javascript template engine.</i></small>
+<i>Tiny javascript template engine.</i>
 
-TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.
+<p>TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.</p>
 
-Templates can be written in HTML markup and look something like that:
-
+<p>Templates can be written in HTML markup and look something like that:</p>
 ``` html
 <script type="text/html" id="example-template">
  <div id="example-content"> 
@@ -30,10 +29,10 @@ Templates can be written in HTML markup and look something like that:
 </script>
 ```
 
-As you can see we combine the script-tag with type="text/html". Now we are able to write html inside this script-tag,
-that gets ignored by the Browser, so we can parse it ourselves (how convenient).
+<p>As you can see we combine the script-tag with type="text/html". Now we are able to write html inside this script-tag,
+that gets ignored by the Browser, so we can parse it ourselves (how convenient).</p>
 
-Together with this easy to read html template we should add an additional javascript object that provides the data.
+<p>Together with this easy to read html template we should add an additional javascript object that provides the data.</p>
 
 ``` js
 let example_template = {
