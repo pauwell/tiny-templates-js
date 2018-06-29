@@ -3,7 +3,7 @@
 </p>
 
 <h1>tiny-templates-js</h1>
-<i>Tiny template engine in Javascript.</i>
+<i><small>Tiny javascript template engine.<small></i>
 
 TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.
 
