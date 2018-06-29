@@ -1,8 +1,9 @@
 <p align="center">
  <img width="150" src="https://rick.cogley.info/img/html5-css3-js-logo.png">
 </p>
-# tiny-templates-js
-Tiny template engine in Javascript.
+
+<h1>tiny-templates-js</h1>
+<i>Tiny template engine in Javascript.</i>
 
 TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.
 
