@@ -8,6 +8,7 @@
 <p>TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.</p>
 
 <p>Templates can be written in HTML markup and look something like that:</p>
+
 ``` html
 <script type="text/html" id="example-template">
  <div id="example-content"> 
