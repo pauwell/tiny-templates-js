@@ -1,9 +1,5 @@
-<center>
- <img border="0" src="https://www.use.com/images/s_1/8cb7c9b49e4c80a73c97.jpg">
-</center>
-
 <p align="center">
- <img width="150" src="https://rick.cogley.info/img/html5-css3-js-logo.png">
+ <img border="0" src="https://www.use.com/images/s_1/8cb7c9b49e4c80a73c97.jpg">
 </p>
 <p align="center"><i>A tiny javascript template engine.</i></p>
 
