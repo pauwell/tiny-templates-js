@@ -8,7 +8,7 @@ Templates can be written in HTML markup and look something like that:
  <script type="text/html" id="example-template">
    <div id="example-content"> 
      :if(this.data.age === 99)
-       <h1 class="a">Welcome, {{name}}</h1>
+       "<h1 class="a">Welcome, {{name}}</h1>"
        <p class="a">Lorem ipsum</p>
        <form>
          <input type="submit" value="Hello">
