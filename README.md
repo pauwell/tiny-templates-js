@@ -4,11 +4,11 @@ Tiny template engine in Javascript.
 TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.
 
 Templates can be written in HTML markup and look something like that:
-
+<div>
  <script type="text/html" id="example-template">
    <div id="example-content"> 
      :if(this.data.age === 99)
-       **<h1 class="a">Welcome, {{name}}</h1>**
+       <h1 class="a">Welcome, {{name}}</h1>
        <p class="a">Lorem ipsum</p>
        <form>
          <input type="submit" value="Hello">
@@ -23,7 +23,7 @@ Templates can be written in HTML markup and look something like that:
      :rof
    </div>
  </script>
-
+</div>
 As you can see we combine the script-tag with type="text/html". Now we are able to write html inside this script-tag,
 that gets ignored by the Browser, so we can parse it ourselves (how convenient).
 
