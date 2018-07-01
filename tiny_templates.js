@@ -9,8 +9,7 @@ var parseHTML = function(str) {
 // Parse all values inside {{ here }}.
 let parseBraceValues = function(raw_template_string, template_data){
 
-  // Split the raw string on opening braces '{{' so that the containing
-  // value is at the beginning of the following parts.
+  // Split the raw string on opening braces '{{'.
   let split_on_brace = raw_template_string.split("{{");
 
   // Now step through each part and insert the corresponding properties.
@@ -31,8 +30,7 @@ let parseBraceValues = function(raw_template_string, template_data){
 // Parse all if-statements in the document.
 let parseIfStatements = function(template, raw_template_string){
 
-  // Split the raw string on opening if-clause ':if' so that the containing
-  // value is at the beginning of the following parts.
+  // Split the raw string on opening if-clause ':if('.
   let split_on_if = raw_template_string.split(":if(");
 
   // Now step through each part and evaluate the if-conditions.
@@ -75,9 +73,39 @@ let parseIfStatements = function(template, raw_template_string){
 }
 
 // Parse all for-loops in the document.
-let parseForLoops = function(raw_template_string){
-  // @ Todo.
-  // ...
+let parseForLoops = function(template, raw_template_string){
+  
+  // Split the raw string on opening for-clause ':for('.
+  let split_on_for = raw_template_string.split(":for(");
+
+  // Now step through each part and evaluate loop conditions.
+  split_on_for.forEach((elem, index, arr) => {
+    if(index == 0) return;
+    let expr = elem.substr(0, elem.indexOf(")")); // Get the raw expression. 
+    let html_content = elem.substr(elem.indexOf(")") + 1,  elem.indexOf(":rof") - 1 - elem.indexOf(")"));
+    let changed_html_string = '';
+
+    // Execute the loop in the template's context.
+    let executeInContext = (function(){
+      eval(
+        `for(${expr}){
+          changed_html_string += html_content;
+        }`
+      );
+    }).bind(template);
+    executeInContext();
+
+    // Overwrite the raw-string with the changes.
+    raw_template_string = raw_template_string.replace(html_content, changed_html_string);
+
+    console.log(changed_html_string);
+    console.log(expr);
+  });
+
+  // Remove directives from the document.
+  raw_template_string = raw_template_string.replace(/[:][f][o][r][(](.*)[)]/g, ""); // Remove :for(.*)
+  raw_template_string = raw_template_string.replace(/[:][r][o][f]/g, "");           // Remove :rof
+
   return raw_template_string;
 }
 
@@ -89,7 +117,7 @@ let parseTemplate = function(base_node_id, template){
 
     // Apply modifications.
     let modified_template = 
-    parseForLoops( // 3) Parse and run for-loops. 
+    parseForLoops(template, // 3) Parse and run for-loops. 
       parseIfStatements(template, // 2) Convert and execute if-conditions. 
         parseBraceValues(raw_template.innerHTML, template.data) // 1) Insert values into braces {{in_here}}.
       )
