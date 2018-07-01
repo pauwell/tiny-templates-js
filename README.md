@@ -99,7 +99,7 @@ parseTemplate('app', example_template);
 
 <p>Now we have successfully created a tiny template. Your output in the browser should look like this:</p>
 
-<h1>Welcome, Hans!</h1>
+<p>Welcome, Hans!</p>
 <p>Lorem ipsum</p>
 
 <p>Of course this is not much right now. So, to add a bit of functionality, I would like to show you, 
