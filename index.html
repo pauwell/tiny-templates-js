@@ -28,18 +28,19 @@
   <script type="text/html" class="example-template">
     <div class="example-content"> 
       :if(this.data.age === 99)
-        <h1 class="a">Welcome, {{name}}</h1>
+        <h1 class="a">Welcome, {{ name }}</h1>
         <p class="a">Lorem ipsum</p>
         <form>
           <input type="submit" value="Hello">
         </form>
+        :add(onclick, handleClick)<button>Hello</button>:dda
       :fi
       :if(this.data.name === "Bob")
         <h1 class="b">Welcome, {{name}}</h1>
         <p class="b">Lorem ipsum</p>
       :fi
       :for(let i=0; i<10; ++i)
-        <p>I am {{age}} years old!</p>
+        <p>I am {{ 10 + this.data.age }} years old!</p>
       :rof
     </div>
   </script>
