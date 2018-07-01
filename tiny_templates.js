@@ -128,8 +128,32 @@ let parseForLoops = function(template, raw_template_string){
 
 // Parse add-statements.
 let parseAddStatements = function(template, raw_template_string){
-  // @ Todo
-  // ...
+  
+  // Split the raw string on opening add-clause ':add('.
+  let split_on_add = raw_template_string.split(":add(");
+
+  // Now step through each part.
+  split_on_add.forEach((elem, index, arr) => {
+    if(index == 0) return;
+    let expr = elem.substr(0, elem.indexOf(")")); // Get the raw expression. 
+    let html_content = elem.substr(elem.indexOf(")") + 1,  elem.indexOf(":dda") - 1 - elem.indexOf(")"));
+    let converted_content = parseHTML(html_content);
+
+   // let attr_name = 
+
+    //@ Todo Finish this.
+
+    //converted_content.setAttribute(?, ?);
+
+    console.log(html_content);
+    console.log(converted_content);
+  });
+
+  // Remove directives from the document.
+  //raw_template_string = raw_template_string.replace(/[:][a][d][d][(](.*)[)]/g, ""); // Remove :for(.*)
+  //raw_template_string = raw_template_string.replace(/[:][d][d][a]/g, "");           // Remove :rof
+
+  return raw_template_string;
 
   /*
     Looks like this in the html-form:
@@ -158,11 +182,13 @@ let parseTemplate = function(base_node_id, template){
 
     // Apply modifications.
     let modified_template = 
-    parseForLoops(template, // 3) Parse and run for-loops. 
-      parseIfStatements(template, // 2) Convert and execute if-conditions. 
-        parseBraceValues(raw_template.innerHTML, template) // 1) Insert values into braces {{in_here}}.
-      )
-    );
+      parseForLoops(template, // 4) Parse and run for-loops. 
+        parseIfStatements(template, // 3) Convert and execute if-conditions.
+          parseAddStatements(template, // 2) Parse add-statements. 
+            parseBraceValues(raw_template.innerHTML, template) // 1) Insert values into braces {{in_here}}.
+          )
+        )
+      );
 
     // Parse.
     let parsed_head_node = parseHTML(modified_template)[0];
