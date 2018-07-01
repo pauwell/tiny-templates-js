@@ -7,8 +7,8 @@
 
 <p><em>TinyTemplatesJs</em> is a really small (some might even say tiny) template parser written in vanilla javascript.</p>
 
-<p>First, let me show you how it works! We start of by creating a simple javascript object that must have
-a name and can contain some additional data:</p>
+<p>First, let me show you the basic concepts! We start of by creating a simple javascript object that has a name
+and some additional data:</p>
 
 ``` js
 let example_template = {
@@ -19,11 +19,11 @@ let example_template = {
    }
  }
 ```
-<p>Together with this we must add a bit of (pseudo) html in the following form: </p>
+<p>Now we add a bit of (pseudo) html in the following form: </p>
 
 ``` html
-<script type="text/html" id="example-template">
- <div id="example-content"> 
+<script type="text/html" class="example-template">
+ <div class="example-content"> 
     <p>Welcome, {{name}}!</p>
     <p>Lorem ipsum</p>
  </div>
@@ -31,13 +31,13 @@ let example_template = {
 ```
 
 <p>As you can see we use traditional html with a few "extras".</p>
-<p>First of all it is embedded in a script-tag that uses <code>text/html</code> as its type. This way the code inside it
-gets ignored by the Browser and we are able to run it through the engine before adding it to the DOM.</p>
+<p>First of all it is embedded in a script-tag that uses <code>text/html</code> as its type. This way the code between the
+script-tags gets ignored by the Browser and we are able to modify it before adding it to the DOM.</p>
 
-<p>Inside the script tag there has to be exactly one root-node that contains all others. In our example that is
-the div container with the id <var>example-content</var>. All other components must be wrapped inside it.</p>
+<p>Inside the script tag there must be one root-node that contains all others. In our example that is
+the div container with the class-name <var>example-content</var>. All other components must be wrapped inside it.</p>
 
-<p>Another thing you might notice are the double curly braces inside the h1 tag with <var>name</var> written inside.
+<p>Another thing you might notice are the double curly braces between the h1 tags with <var>name</var> written inside.
 Everything that is written inside these double curly braces gets evaluated as javascript. But then why is writing
 just <var>name</var> considered valid javascript? To explain that I think its best to just show you the order in which the 
 content inside the braces is getting parsed and evaluated:</p>
@@ -72,8 +72,8 @@ parseTemplate('app', example_template);
     <div id="app"></div>
 
     <!-- Example template html -->
-    <script type="text/html" id="example-template">
-    <div id="example-content"> 
+    <script type="text/html" class="example-template">
+    <div class="example-content"> 
         <p>Welcome, {{name}}!</p>
         <p>Lorem ipsum</p>
     </div>
@@ -102,10 +102,10 @@ parseTemplate('app', example_template);
 <p>Welcome, Hans!</p>
 <p>Lorem ipsum</p>
 
-<p>Of course this is not much right now. So, to add a bit of functionality, I would like to show you, 
+<p>But let us go a bit further. To add a bit of functionality, I would like to show you, 
 what <i>if-conditions</i> and <i>for-loops</i> look like.</p>
 <p>To create an <i>if-condition</i>, we use the blocks <code>:if(<i>expr</i>)</code> and <code>:fi</code>. <code>:if</code> opens a condition which then 
-evaluates the expression inside the braces. If the condition evaluates to false everything until the 
+evaluates the expression inside the braces. If the condition is false everything until the 
 closing <code>:fi</code> block will get the attribute <code>display: none;</code>.</p>
 <p>It looks like this:</p>
 
@@ -122,3 +122,5 @@ closing <code>:fi</code> block will get the attribute <code>display: none;</code
 	<p>I will be printed 10 times.</p>
 :rof
 ```
+
+<p>Notice, that it is not possible right now to access the index variable <var>i</var> from inside the loop.</p>
