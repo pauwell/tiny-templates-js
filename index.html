@@ -52,5 +52,22 @@
       :rof
     </div>
   </script>
+
+  <!-- TEST -->
+  <script>
+  
+    let bob = {
+      age: 0
+    }
+    let ageChange = function(property, oldValue, newValue){
+        console.log(newValue);
+        console.log(`age changed from ${oldValue} to ${newValue}!`);
+      }
+    bob.watch('age', ageChange);
+    bob.age = 100;
+    bob.age = 40;
+
+  </script>
+  <!-- TEST -->
 </body>
 </html>

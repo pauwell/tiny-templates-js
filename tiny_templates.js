@@ -166,24 +166,6 @@ let parseAddStatements = function(template, raw_template_string){
   raw_template_string = raw_template_string.replace(/[:][d][d][a]/g, "");           // Remove :dda
 
   return raw_template_string;
-
-  /*
-    Looks like this in the html-form:
-    :add(onclick, handleClick)
-      <button>Hello</button>
-    :dda
-
-    The attribute that gets used in this example is onclick. Afterwards it gets
-    checked wether the second parameter is a data-type or a function. If its a function
-    it gets added with braces like this:
-
-      <button onclick="handleClick()"></button>
-
-    But it could also be for example an align directive:
-
-      <button align="center"></button>
-  */
-
 }
 
 // Parse all instances of a template and append them to a given base-node. 
@@ -209,4 +191,14 @@ let parseTemplate = function(base_node_id, template){
     // Append the parsed template with its 'head'-node to 'app'.
     base_node.appendChild(parsed_head_node);
   });
+
+  // @ Test watching.
+  for(let data_member in template.data){
+    if(template.data.hasOwnProperty(data_member)){
+      console.log(data_member);
+      template.watch(template.data.data_member, (function(property, oldValue, newValue){
+        console.log(newValue);
+      }).bind(template));
+    }
+  }
 }
