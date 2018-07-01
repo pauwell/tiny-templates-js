@@ -7,33 +7,8 @@
 
 <p>TinyTemplatesJs is a really small (some might even say tiny) template parser written in Vanilla JS.</p>
 
-<p>Templates can be written in HTML markup and look something like that:</p>
-
-``` html
-<script type="text/html" id="example-template">
- <div id="example-content"> 
-   :if(this.data.age === 99)
-     <h1 class="a">Welcome, {{name}}</h1>
-     <p class="a">Lorem ipsum</p>
-     <form>
-       <input type="submit" value="Hello">
-     </form>
-   :fi
-   :if(this.data.name === "Bob")
-     <h1 class="b">Welcome, {{name}}</h1>
-     <p class="b">Lorem ipsum</p>
-   :fi
-   :for(let i=0; i<10; ++i)
-     <p>I am {{age}} years old!</p>
-   :rof
- </div>
-</script>
-```
-
-<p>As you can see we combine the script-tag with type="text/html". Now we are able to write html inside this script-tag,
-that gets ignored by the Browser, so we can parse it ourselves (how convenient).</p>
-
-<p>Together with this easy to read html template we should add an additional javascript object that provides the data.</p>
+<p>First, let me show you how it works! We start of by creating a simple javascript object that must have
+a name and can contain some additional data:</p>
 
 ``` js
 let example_template = {
@@ -44,4 +19,71 @@ let example_template = {
    }
  }
 ```
-Now we have successfully created a tiny template. 
+<p>Together with this we must add a bit of (pseudo) html in the following form: </p>
+
+``` html
+<script type="text/html" id="example-template">
+ <div id="example-content"> 
+    <h1>Welcome, {{name}}!</h1>
+    <p>Lorem ipsum</p>
+ </div>
+</script>
+```
+
+<p>As you can see we use traditional html with a few "extras".</p>
+<p>First of all there is the script-tag that uses "text/html" as its type. This way the code inside it
+gets ignored by the Browser and we are able to run it through the engine before adding it to the DOM.</p>
+
+<p>Inside the script tag there has to be exactly one root-node that contains all others. In our example that is
+the div container with the id "example-content". All other components must be wrapped inside it.</p>
+
+<p>Another thing you might notice are the double curly braces inside the h1 tag with "name" written inside.
+Everything that is written inside these double curly braces gets evaluated as javascript. But then why is writing
+just "name" considered valid javascript? To explain that I think its best to just show you the order in which the 
+content inside the braces gets parsed and evaluated:</p>
+<ol>
+  <li>If it contains the name of a data member from our javascript object then its value get inserted here.</li>
+  <li>If it is a valid javascript expression, it gets evaluated and the output gets inserted here.</li>
+</ol>
+
+<p>In the example, the identifier "name" can be found inside the data-section of our template and therefore gets
+inserted.</p>
+
+<p>Now we are just one step away from being able to see the template in the browser: we need to parse it.
+In order to do that we need an entry point in our DOM to which the template should be attached. We will create
+a simple div with the id "app" as our entry:</p>
+
+``` html
+<div id="app"></div>
+```
+
+<p>And then we call the parseTemplate-function from TinyTemplatesJs to parse it: </p>
+
+``` js
+parseTemplate('app', example_template);
+```
+
+<p>Now we have successfully created a tiny template. Your output in the browser should look like this:</p>
+
+``` html
+<h1>Welcome, Hans!</h1>
+<p>Lorem ipsum</p>
+```
+
+<p>Of course this is not much right now. So, to add a bit of functionality, I would like to show you, 
+what if-conditions and for-loops look like.</p>
+<p>To create an if-condition, we use the blocks :if(<i>expr</i>) and :fi. :if opens a condition which then 
+evaluates the expression inside the braces. If the condition evaluates to false everything until the 
+closing :fi block will get the attribute display: none;</p>
+
+<p>This looks like this:</p>
+
+:if(this.data.age === 99)
+	<p>I am only visible if the age is 99</p>
+:fi
+
+<p>The same goes with for-loops, that start with for(<i>expr</i>) and end with :rof:</p>
+
+:for(let i=0; i<10; ++i)
+	<p>I will be printed 10 times.</p>
+:rof
