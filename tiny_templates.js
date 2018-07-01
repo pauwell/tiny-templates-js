@@ -81,26 +81,25 @@ let parseForLoops = function(raw_template_string){
   return raw_template_string;
 }
 
-// Parse a template and append it to a given base-node. 
+// Parse all instances of a template and append them to a given base-node. 
 let parseTemplate = function(base_node_id, template){
 
-  // @ Todo: getElementsByClassName to make multiple instances possible.
+  // Loop through all instances.
+  document.querySelectorAll('.'+template.name).forEach(function(raw_template) {
 
-  // Get the content of the template wrapper as a string.
-  let raw_template = document.getElementById(template.name).innerHTML;
-  
-  // Apply modifications.
-  let modified_template = 
+    // Apply modifications.
+    let modified_template = 
     parseForLoops( // 3) Parse and run for-loops. 
       parseIfStatements(template, // 2) Convert and execute if-conditions. 
-        parseBraceValues(raw_template, template.data) // 1) Insert values into braces {{in_here}}.
+        parseBraceValues(raw_template.innerHTML, template.data) // 1) Insert values into braces {{in_here}}.
       )
     );
 
-  // Parse.
-  let parsed_head_node = parseHTML(modified_template)[0];
-  let base_node = document.getElementById(base_node_id);
-  
-  // Append the parsed template with its 'head'-node to 'app'.
-  base_node.appendChild(parsed_head_node);
+    // Parse.
+    let parsed_head_node = parseHTML(modified_template)[0];
+    let base_node = document.getElementById(base_node_id);
+
+    // Append the parsed template with its 'head'-node to 'app'.
+    base_node.appendChild(parsed_head_node);
+  });
 }
