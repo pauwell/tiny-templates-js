@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TinyTemplatesJs</title>
+  <script src="watch.js"></script>
   <script src="tiny_templates.js"></script>
   <script>
     // Example template.
@@ -13,6 +14,12 @@
       data: {
         name: 'Hans',
         age: 99
+      },
+      methods: {
+        decrementAge(){ 
+          --this.age;
+          console.log(this.age); 
+        }
       }
     }
     window.addEventListener("load", function(){
@@ -33,7 +40,7 @@
         <form>
           <input type="submit" value="Hello">
         </form>
-        :add(onclick, handleClick)<button>Hello</button>:dda
+        :add(onclick, decrementAge)<button>Hello</button>:dda
       :fi
       :if(this.data.name === "Bob")
         <h1 class="b">Welcome, {{name}}</h1>
