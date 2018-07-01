@@ -137,21 +137,32 @@ let parseAddStatements = function(template, raw_template_string){
     if(index == 0) return;
     let expr = elem.substr(0, elem.indexOf(")")); // Get the raw expression. 
     let html_content = elem.substr(elem.indexOf(")") + 1,  elem.indexOf(":dda") - 1 - elem.indexOf(")"));
-    let converted_content = parseHTML(html_content);
+    let node = parseHTML(html_content)[0];
 
-   // let attr_name = 
+    let attr_name = expr.split(',')[0].trim();
+    let attr_value= expr.split(',')[1].trim();
 
-    //@ Todo Finish this.
+    if(attr_value in template.data){
+      attr_value = template.data[attr_value];
+    }else if(attr_value in template.methods){
+      attr_value += '()'; // @ When invoking the function what about 'this' context? 
+    }
 
-    //converted_content.setAttribute(?, ?);
+    node.setAttribute(attr_name, attr_value);
 
+    // @ This replaces every piece in the document that looks like this content.
+    // which is not the desired behavior.
+    raw_template_string = raw_template_string.replace(html_content, node.outerHTML);
+
+    console.log(`Attribute name [${attr_name}]`);
+    console.log(`Attribute value [${attr_value}]`);
+    console.log(expr);
     console.log(html_content);
-    console.log(converted_content);
   });
 
   // Remove directives from the document.
-  //raw_template_string = raw_template_string.replace(/[:][a][d][d][(](.*)[)]/g, ""); // Remove :for(.*)
-  //raw_template_string = raw_template_string.replace(/[:][d][d][a]/g, "");           // Remove :rof
+  //raw_template_string = raw_template_string.replace(/[:][a][d][d][(](.*)[)]/g, ""); // Remove :add(.*)
+  raw_template_string = raw_template_string.replace(/[:][d][d][a]/g, "");           // Remove :dda
 
   return raw_template_string;
 
