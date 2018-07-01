@@ -161,6 +161,7 @@ let parseAddStatements = function(template, raw_template_string){
   });
 
   // Remove directives from the document.
+  // @ Todo: Bugs because of the comma 
   //raw_template_string = raw_template_string.replace(/[:][a][d][d][(](.*)[)]/g, ""); // Remove :add(.*)
   raw_template_string = raw_template_string.replace(/[:][d][d][a]/g, "");           // Remove :dda
 
