@@ -1,3 +1,5 @@
+"use strict";
+
 /* Parse a string to a HTML collection.
  From: http://youmightnotneedjquery.com */
 var parseHTML = function(str) {
@@ -6,8 +8,14 @@ var parseHTML = function(str) {
   return tmp.body.children;
 }; 
 
+/* Escape regex strings.
+From: https://makandracards.com/makandra/15879-javascript-how-to-generate-a-regular-expression-from-a-string */
+RegExp.escape = function(string) {
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+};
+
 // Parse all values inside {{ here }}.
-let parseBraceValues = function(raw_template_string, template_data){
+let parseBraceValues = function(raw_template_string, template){
 
   // Split the raw string on opening braces '{{'.
   let split_on_brace = raw_template_string.split("{{");
@@ -16,11 +24,23 @@ let parseBraceValues = function(raw_template_string, template_data){
   split_on_brace.forEach((elem, index, arr) => {
     if(index == 0) return;
     let expr = elem.split("}}")[0]; // Get the actual value.
-    
-    if(expr in template_data){
+    let trimmed_expr = expr.trim();
+
+    if(trimmed_expr in template.data){
       // If its a plain data member of the template, just fill in the corresponding value.
       let regex = new RegExp('{{' + expr + '}}', 'g'); 
-      raw_template_string = raw_template_string.replace(regex, template_data[expr]);
+      raw_template_string = raw_template_string.replace(regex, template.data[trimmed_expr]);
+    }else{
+      let new_value = '';
+      // Evaluate it as an expression in the context of the template.
+      let executeInContext = (function(){
+        new_value = eval(expr);
+      }).bind(template);
+      executeInContext();
+
+      // Overwrite the raw-string with the changes using regex.
+      let regex = new RegExp('{{' + RegExp.escape(expr) + '}}', 'g'); 
+      raw_template_string = raw_template_string.replace(regex, new_value);
     }
   });
 
@@ -78,7 +98,7 @@ let parseForLoops = function(template, raw_template_string){
   // Split the raw string on opening for-clause ':for('.
   let split_on_for = raw_template_string.split(":for(");
 
-  // Now step through each part and evaluate loop conditions.
+  // Now step through each part and evaluate the loop conditions.
   split_on_for.forEach((elem, index, arr) => {
     if(index == 0) return;
     let expr = elem.substr(0, elem.indexOf(")")); // Get the raw expression. 
@@ -97,9 +117,6 @@ let parseForLoops = function(template, raw_template_string){
 
     // Overwrite the raw-string with the changes.
     raw_template_string = raw_template_string.replace(html_content, changed_html_string);
-
-    console.log(changed_html_string);
-    console.log(expr);
   });
 
   // Remove directives from the document.
@@ -107,6 +124,30 @@ let parseForLoops = function(template, raw_template_string){
   raw_template_string = raw_template_string.replace(/[:][r][o][f]/g, "");           // Remove :rof
 
   return raw_template_string;
+}
+
+// Parse add-statements.
+let parseAddStatements = function(template, raw_template_string){
+  // @ Todo
+  // ...
+
+  /*
+    Looks like this in the html-form:
+    :add(onclick, handleClick)
+      <button>Hello</button>
+    :dda
+
+    The attribute that gets used in this example is onclick. Afterwards it gets
+    checked wether the second parameter is a data-type or a function. If its a function
+    it gets added with braces like this:
+
+      <button onclick="handleClick()"></button>
+
+    But it could also be for example an align directive:
+
+      <button align="center"></button>
+  */
+
 }
 
 // Parse all instances of a template and append them to a given base-node. 
@@ -119,7 +160,7 @@ let parseTemplate = function(base_node_id, template){
     let modified_template = 
     parseForLoops(template, // 3) Parse and run for-loops. 
       parseIfStatements(template, // 2) Convert and execute if-conditions. 
-        parseBraceValues(raw_template.innerHTML, template.data) // 1) Insert values into braces {{in_here}}.
+        parseBraceValues(raw_template.innerHTML, template) // 1) Insert values into braces {{in_here}}.
       )
     );
 
