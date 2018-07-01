@@ -24,7 +24,7 @@ let example_template = {
 ``` html
 <script type="text/html" id="example-template">
  <div id="example-content"> 
-    <h1>Welcome, {{name}}!</h1>
+    <p>Welcome, {{name}}!</p>
     <p>Lorem ipsum</p>
  </div>
 </script>
@@ -74,7 +74,7 @@ parseTemplate('app', example_template);
     <!-- Example template html -->
     <script type="text/html" id="example-template">
     <div id="example-content"> 
-        <h1>Welcome, {{name}}!</h1>
+        <p>Welcome, {{name}}!</p>
         <p>Lorem ipsum</p>
     </div>
     </script>
