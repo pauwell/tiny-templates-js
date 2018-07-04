@@ -33,7 +33,10 @@
   <script type="text/html" id="base-template">
     <div>
       <h1>Hello</h2>
-      <p>Your age is :js(this.state.state['age'])!</p> 
+      <p>Your age is :js(this.state.state['age'])!</p>
+      :if(this.state.state['age']>100)
+        <p>Wow, you are really old!</p>
+      :fi
       <button onclick="baseTemplate.incrementAge()">Increment age</button>
     </div>
   </script>

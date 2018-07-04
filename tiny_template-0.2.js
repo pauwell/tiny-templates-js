@@ -37,7 +37,17 @@ class TinyTemplate{
     let splitAtIf = raw.split(':if(');
     splitAtIf.forEach((statement, index, arr) => {
       if(index===0) return;
-      // @ Todo: Finish parsing :if statements.
+      let expression = statement.substr(0, statement.indexOf(')'));
+      let evaluateInContext = (function(){
+        return eval(expression);
+      }).bind(this);
+      let evaluated = evaluateInContext();
+      if(evaluated === false){
+        statement = statement.substr(statement.indexOf(':fi'));
+      }else{
+        statement = statement.substr(statement.indexOf(')') + 1);
+      }
+      splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '');
     });
     raw = splitAtIf.join('');
 
