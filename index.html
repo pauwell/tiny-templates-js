@@ -5,69 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TinyTemplatesJs</title>
-  <script src="watch.js"></script>
-  <script src="tiny_templates.js"></script>
+  <script src="tiny_helper.js"></script>
+  <script src="tiny_state.js"></script>
+  <script src="tiny_template-0.2.js"></script>
   <script>
-    // Example template.
-    let example_template = {
-      name: 'example-template',
-      data: {
-        name: 'Hans',
-        age: 99
-      },
-      methods: {
-        decrementAge(){ 
-          --this.age;
-          console.log(this.age); 
-        }
+    /* Example template. */
+    class BaseTemplate extends TinyTemplate{
+      constructor(parent, name, state){
+        super(parent, name, state);
+      }
+
+      incrementAge(){ // This function changes the internal state.
+        this.state.setState({age: this.state.state['age'] + 1});
       }
     }
-    window.addEventListener("load", function(){
-      parseTemplate('app', example_template);
-    });
   </script>
 </head>
 <body>
   <!-- Application entry -->
-  <div id="app"></div>
+  <h1>TinyTemplatesJS</h1>
+  <fieldset>
+    <legend><em>Example template</em></legend>
+    <div id="app"></div>
+  </fieldset>
 
   <!-- Example template -->
-  <script type="text/html" class="example-template">
-    <div class="example-content"> 
-      :if(this.data.age === 99)
-        <h1 class="a">Welcome, {{ name }}</h1>
-        <p class="a">Lorem ipsum</p>
-        <form>
-          <input type="submit" value="Hello">
-        </form>
-        :add(onclick, decrementAge)<button>Hello</button>:dda
-        :add(color, red)<button>Hello</button>:dda
-      :fi
-      :if(this.data.name === "Bob")
-        <h1 class="b">Welcome, {{name}}</h1>
-        <p class="b">Lorem ipsum</p>
-      :fi
-      :for(let i=0; i<10; ++i)
-        <p>I am {{ 10 + this.data.age }} years old!</p>
-      :rof
+  <script type="text/html" id="base-template">
+    <div>
+      <h1>Hello</h2>
+      <p>Your age is :js(this.state.state['age'])!</p> 
+      <button onclick="baseTemplate.incrementAge()">Increment age</button>
     </div>
   </script>
 
-  <!-- TEST -->
-  <script>
-  
-    let bob = {
-      age: 0
-    }
-    let ageChange = function(property, oldValue, newValue){
-        console.log(newValue);
-        console.log(`age changed from ${oldValue} to ${newValue}!`);
-      }
-    bob.watch('age', ageChange);
-    bob.age = 100;
-    bob.age = 40;
-
+  <!-- Parse -->
+  <script>    
+    let appNode = document.getElementById('app');
+    let baseTemplate = new BaseTemplate(appNode, 'base-template', {age: 99});
   </script>
-  <!-- TEST -->
 </body>
 </html>
