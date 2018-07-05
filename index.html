@@ -18,6 +18,10 @@
       incrementAge(){ // This function changes the internal state.
         this.state.setState({age: this.state.state['age'] + 1});
       }
+      updateName(event){
+        this.state.setState({name: event.target.value});
+        console.log("hi");
+      }
     }
   </script>
 </head>
@@ -33,18 +37,27 @@
   <script type="text/html" id="base-template">
     <div>
       <h1>Hello</h2>
+      <label>Your name is :js(this.state.state['name']) </label>
+      <input 
+        type="text" 
+        onchange="baseTemplate.updateName(event)"
+      >
+      <p>Your age is :js(this.state.state['age'])!</p>
       <p>Your age is :js(this.state.state['age'])!</p>
       :if(this.state.state['age']>100)
         <p>Wow, you are really old!</p>
       :fi
       <button onclick="baseTemplate.incrementAge()">Increment age</button>
+      <p>
+        <div><p>Hello there.</p></div>
+      </p>
     </div>
   </script>
 
   <!-- Parse -->
   <script>    
     let appNode = document.getElementById('app');
-    let baseTemplate = new BaseTemplate(appNode, 'base-template', {age: 99});
+    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', age: 95});
   </script>
 </body>
 </html>
