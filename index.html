@@ -17,10 +17,11 @@
 
       incrementAge(){ // This function changes the internal state.
         this.state.setState({age: this.state.state['age'] + 1});
+        console.log("Age changed");
       }
       updateName(event){
         this.state.setState({name: event.target.value});
-        console.log("hi");
+        console.log("Name changed");
       }
     }
   </script>
