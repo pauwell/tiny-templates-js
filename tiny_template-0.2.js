@@ -31,7 +31,7 @@ class TinyTemplate{
       }).bind(this);
       let evaluated = evaluateInContext();
 
-      splitAtJs[index] = evaluated + statement.substr(statement.indexOf(')') + 1);
+      splitAtJs[index] = `<span id="js_${index}">${evaluated}</span>` + statement.substr(statement.indexOf(')') + 1);
     });
     raw = splitAtJs.join(''); 
 
@@ -45,76 +45,35 @@ class TinyTemplate{
       }).bind(this);
       let evaluated = evaluateInContext();
       if(evaluated === false){
-        statement = statement.substr(statement.indexOf(':fi'));
+        statement = `<span id="if_${index}">` + statement.substr(statement.indexOf(':fi'));
       }else{
-        statement = statement.substr(statement.indexOf(')') + 1);
+        statement = `<span id="if_${index}">` + statement.substr(statement.indexOf(')') + 1);
       }
-      splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '');
+      console.log(statement);
+      splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '</span>');
     });
     raw = splitAtIf.join('');
 
-    // Convert from text to nodes and reassign id to root element.
-    let newDomNode = parseHTML(raw)[0]; 
-    newDomNode.id = this.id;
-
-    // Write changes to the DOM.
-    let currentDomNode = document.getElementById(this.id);
 
     // new
-    let changedOld = [];
-    let changedNew = [];
-    let allNew = newDomNode.getElementsByTagName('*');
-    let allOld = currentDomNode.getElementsByTagName('*');
-    
-    // Save all nodes that are in both the current and the new dom.
-    let stayingNodes = [];
-    for(let i=0; allOld[i] !== undefined; ++i){
-      for(let j=0; allNew[j] !== undefined; ++j){
-        if(allOld[i].isEqualNode(allNew[j])){
-          stayingNodes.push(allOld[i]);
-        }
-      }
-    }
-    console.log("Found matches:");
-    console.log(stayingNodes);
+    let activeDomNode = document.getElementById(this.id); // <div id="exmpl_1"></div>
 
-    for(let i=0; allNew[i] !== undefined; ++i){
-      let oldNode = allOld[i];
-      let newNode = allNew[i];
-      if(oldNode===undefined){
+    // Convert raw to html nodes and reattach id to root.
+    let convertedOutput = parseHTML(raw)[0];
+    convertedOutput.id = this.id; 
+
+    // Get all active DOM nodes and the changed new ones.
+    let allActiveNodes = activeDomNode.getElementsByTagName('*');
+    let allNewNodes = convertedOutput.getElementsByTagName('*');
+
+    // Append all children if they are not in the DOM currently.
+    //if(activeDomNode.childElementCount == 0)  
+    activeDomNode.parentNode.replaceChild(convertedOutput, activeDomNode);
       
-      }else if(oldNode.isEqualNode(newNode) === false){
-        console.log("Change detected:");
-        console.log(oldNode);
-        console.log(newNode);
-        console.log("-------------------");
-
-        // @Todo: check following nodes for new matching ones.
-        // 1) Replace oldNode with newNode in DOM.
-        // 2) Also insert the following nodes form newNode's if they are not in the stayingNodes list into dom behind newNode.
-        // 3) Remove the following nodes from oldNode from DOM until it is one of the styling Nodes.
-        // 4) Continue loop
-        // The following should be removed, instead DOM gets directly changed above.
-        changedOld.push(oldNode);
-        changedNew.push(newNode);
-      }
-    }
-    console.log(changedOld);
-    console.log(changedNew);
-    
-    // Todo remove this eventually. (Besides the initial settings for first run)
-    // Read more above.
-    if(currentDomNode.childElementCount == 0)
-      currentDomNode.parentNode.replaceChild(newDomNode, currentDomNode);
-    else{
-      for(let i=0; i<changedOld.length; ++i){
-        currentDomNode.replaceChild(changedNew[i], changedOld[i]);
-      }
-    }
-    // new
-
-    // Uncomment for previous try.
-    //currentDomNode.parentNode.replaceChild(newDomNode, currentDomNode);
+   // console.log("Active DOM node:");
+   // console.log(activeDomNode.outerHTML);
+   // console.log("Converted output:");
+   // console.log(convertedOutput.outerHTML);
   }
 }
 TinyTemplate.IdCounter = 0;
