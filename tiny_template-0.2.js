@@ -19,10 +19,8 @@ class TinyTemplate{
 
   parseView(){
     let raw = this.textView;  // Do not change this.textView itself.
+    let updateIds = [];       // Statement ID's are are used to detect changes in the current state.
 
-    // Statement ID's are the same every time so they are used for detecting changes to the current state.
-    let updateIds = [];
-    console.log(this.state.lastChangedProperties);
     // :js
     let splitAtJs = raw.split(':js(');
     splitAtJs.forEach((statement, index, arr) => {
@@ -40,11 +38,8 @@ class TinyTemplate{
 
       // If the expression contains a property that was changed it gets updated.
       this.state.lastChangedProperties.forEach((prop)=>{
-        console.log("Exression: " + expression);
-        console.log("Prop: " + prop);
         if(expression.indexOf(prop) !== -1 && updateIds.indexOf(id) === -1){
           updateIds.push(id);
-          console.log("push js");
           return;
         }
       });
@@ -70,11 +65,8 @@ class TinyTemplate{
 
       // If the expression contains a property that was changed it gets updated.
       this.state.lastChangedProperties.forEach((prop)=>{
-        console.log("Exression: " + expression);
-        console.log("Prop: " + prop);
         if(expression.indexOf(prop) !== -1 && updateIds.indexOf(id) === -1){
             updateIds.push(id);
-            console.log("push if");
             return;
         }
       });
@@ -88,7 +80,8 @@ class TinyTemplate{
     });
     raw = splitAtIf.join(''); // Write changes to raw.
 
-    let activeDomNode = document.getElementById(this.id); // <div id="exmpl_1"></div>
+    // Get the root container of the template from the DOM.
+    let activeDomNode = document.getElementById(this.id); 
 
     // Convert raw to html nodes and reattach id to root.
     let convertedOutput = parseHTML(raw)[0];
@@ -98,33 +91,24 @@ class TinyTemplate{
     let allActiveNodes = activeDomNode.getElementsByTagName('*');
     let allNewNodes = convertedOutput.getElementsByTagName('*');
 
-    // Append all children if they are not in the DOM currently.
-    if(activeDomNode.childElementCount == 0){  
+    if(activeDomNode.childElementCount == 0){ 
+      // Populate the root node with all children if it is empty (on first go). 
       activeDomNode.parentNode.replaceChild(convertedOutput, activeDomNode);
     }else{
-      
-      console.log('Allnewnodes:');
-      console.log(allNewNodes);
-      console.log(updateIds);
+      // Check if any of the ID's of the new nodes match the ones that should be updated.
       for(let i=0; allNewNodes[i] !== undefined; ++i){
-        console.log(updateIds);
         if(updateIds.indexOf(allNewNodes[i].id) !== -1){
 
-          // @ Todo: Somehow here the js_ ids are detected but not the if_...
-
-          console.log("update " + allNewNodes[i].id);
+          // Receive the corresponding node from the DOM.
           let domRef = document.getElementById(allNewNodes[i].id);
-          domRef.parentNode.replaceChild(allNewNodes[i], domRef);
+
+          // If the content has really changed, the node is replaced by the new one.
+          if(domRef.innerHTML !== allNewNodes[i].innerHTML){
+            domRef.parentNode.replaceChild(allNewNodes[i].cloneNode(true), domRef);
+          }
         }
       }
-
-      // @ TODO: check if the innerhtml of the node really changed before updateing. maybe its an if condition that it false the whhole
-        // time but gets updated the whole time because it just contained the value.
     }
-   // console.log("Active DOM node:");
-   // console.log(activeDomNode.outerHTML);
-   // console.log("Converted output:");
-   // console.log(convertedOutput.outerHTML);
   }
 }
-TinyTemplate.IdCounter = 0;
+TinyTemplate.IdCounter = 0; // Used for counting up the generated ID's from the template's constructor.
