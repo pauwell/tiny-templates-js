@@ -15,13 +15,15 @@
         super(parent, name, state);
       }
 
-      incrementAge(){ // This function changes the internal state.
-        this.state.setState({age: this.state.state['age'] + 1});
-        console.log("Age changed");
+      changeAge(increment){ // This function changes the internal state.
+        if(increment === true){
+          this.state.setState({age: this.state.state['age'] + 1});
+        }else if(this.state.state['age'] > 0){
+          this.state.setState({age: this.state.state['age'] - 1});
+        }
       }
       updateName(event){
         this.state.setState({name: event.target.value});
-        console.log("Name changed");
       }
     }
   </script>
@@ -37,21 +39,25 @@
   <!-- Example template -->
   <script type="text/html" id="base-template">
     <div>
-      <h1>Hello</h2>
-      <label>Your name is :js(this.state.state['name']) </label>
-      <input 
-        type="text" 
-        onchange="baseTemplate.updateName(event)"
-      >
-      <p>Your age is :js(this.state.state['age'])!</p>
-      <p>Your age is :js(this.state.state['age'])!</p>
-      :if(this.state.state['age']>100)
-        <p>Wow, you are really old!</p>
-        <p>Second line</p>
-      :fi
-      <button onclick="baseTemplate.incrementAge()">Increment age</button>
+      <h1>Form</h2>
+        <fieldset>
+          <p>Your age is :js(this.state.state['age'])!</p>
+          <p>And your name is :js(this.state.state['name'])!</p>
+        </fieldset>
       <p>
-        <div><p>Hello there.</p></div>
+        <label>Name :js(this.state.state['name']) </label>
+        <input 
+          type="text" 
+          onkeyup="baseTemplate.updateName(event)"
+        >
+      </p>
+      <p><span>Age :js(this.state.state['age'])</span>
+          <button onclick="baseTemplate.changeAge(true)">Older</button>
+          <button onclick="baseTemplate.changeAge(false)">Younger</button>
+       
+        :if(this.state.state['age']>80)
+          <em>Wow, you are really old!</em>
+        :fi
       </p>
     </div>
   </script>
@@ -59,7 +65,7 @@
   <!-- Parse -->
   <script>    
     let appNode = document.getElementById('app');
-    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', age: 95});
+    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', age: 65, weight: 80, height: 174});
   </script>
 </body>
 </html>
