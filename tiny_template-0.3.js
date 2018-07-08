@@ -17,6 +17,13 @@ class TinyTemplate{
     console.log(`Created ${this.name} with id[${this.id}]!`);
   }
 
+  setState(newState){
+    this.state.setState(newState);
+  }
+  getState(prop){
+    return this.state.state[prop];
+  }
+
   parseView(){
     let raw = this.textView;  // Do not change this.textView itself.
     let updateIds = [];       // Statement ID's are are used to detect changes in the current state.
@@ -27,7 +34,8 @@ class TinyTemplate{
       if(index===0) return;
       
       // Evaluate the expression in the context of this template.
-      let expression = statement.substr(0, statement.indexOf(')'));
+      let closingBraceIndex = findClosingBraceIndex(statement);
+      let expression = statement.substr(0, closingBraceIndex);
       let evaluateInContext = (function(){
         return eval(expression);
       }).bind(this);
@@ -44,7 +52,7 @@ class TinyTemplate{
         }
       });
 
-      splitAtJs[index] = `<span id="${id}">${evaluated}</span>` + statement.substr(statement.indexOf(')') + 1);
+      splitAtJs[index] = `<span id="${id}">${evaluated}</span>` + statement.substr(closingBraceIndex + 1);
     });
     raw = splitAtJs.join(''); // Write changes to raw.
 
@@ -54,7 +62,8 @@ class TinyTemplate{
       if(index===0) return;
     
       // Evaluate the expression in the context of this template.
-      let expression = statement.substr(0, statement.indexOf(')'));
+      let closingBraceIndex = findClosingBraceIndex(statement);
+      let expression = statement.substr(0, closingBraceIndex);
       let evaluateInContext = (function(){
         return eval(expression);
       }).bind(this);
@@ -74,7 +83,7 @@ class TinyTemplate{
       // Remove content if statement evaluated to false.
       statement = (evaluated === false) ?
         `<span id="${id}">` + statement.substr(statement.indexOf(':fi'))
-      : `<span id="${id}">` + statement.substr(statement.indexOf(')') + 1);
+      : `<span id="${id}">` + statement.substr(closingBraceIndex + 1);
 
       splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '</span>');
     });
