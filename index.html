@@ -5,18 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TinyTemplatesJs</title>
-  <style>
-    .base-template{
-      background-color: rgb(236, 236, 236);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-    }
-    .base-template > h2{ width: 100%; text-align: center; }
-    .input, .output{ min-width: 320px; margin-bottom: 20px; }
-    .input{ background-color: limegreen; }
-    .output{ background-color: lightgray; }
-  </style>
   <script src="tiny_helper.js"></script>
   <script src="tiny_state.js"></script>
   <script src="tiny_template-0.3.js"></script>
@@ -26,19 +14,16 @@
       constructor(parent, name, state){
         super(parent, name, state);
       }
-
-      changeAge(increment){ // This function changes the internal state.
-        if(increment === true){
-          this.setState({age: this.getState('age') + 1});
-        }else if(this.getState('age') > 0){
-          this.setState({age: this.getState('age') - 1});
-        }
+      buy(product, price){
+        this.setState({cartItems: this.getState('cartItems').concat({product: product, price: price})});
+        calculateTotalPrice();
       }
-      changeWeight(event){
-        this.setState();//toodo
-      }
-      updateName(event){
-        this.setState({name: event.target.value});
+      calculateTotalPrice(){
+        let price = 0;
+        this.getState('cartItems').forEach((product) => {
+          price += product.price;
+        });
+        setState({priceTotal: price+'$'});
       }
     }
   </script>
@@ -54,42 +39,50 @@
   <!-- Example template -->
   <script type="text/html" id="base-template">
     <div class="base-template">
-      <h2>Form</h2>   
-      <fieldset class="input">
-        <h3>Input</h3>
-        <p><i>Please fill in the data</i></p>
-        <p>
-          <label>Name</label>
-          <input type="text" onkeyup="baseTemplate.updateName(event)">
-        </p>
-        <p>
-            <span>Age :js(this.getState('age'))</span>
-            <button onclick="baseTemplate.changeAge(true)">Older</button>
-            <button onclick="baseTemplate.changeAge(false)">Younger</button>
-        
-          :if(this.getState('age') > 80)
-            <em>Wow, you are really old!</em>
-          :fi
-        </p>
-        <p>
-          <label>Weight</label>
-          <input type="range" min="0" max="200" value="70" onchange="console.log('hey');">
-        </p>
+      <h2>Shopping</h2>   
+      <fieldset class="buy">
+        <h3>Buy</h3>
+        <ul>
+          <li>Apple 1$ <button onclick="baseTemplate.buy('Apple', 1)">+</button></li>
+          <li>Banana 2$ <button onclick="baseTemplate.buy('Banana', 2)">+</button></li>
+          <li>Orange 4$ <button onclick="baseTemplate.buy('Orange', 4)">+</button></li>
+        </ul>
       </fieldset>
-      <fieldset class="output">
-          <h3>Output</h3>
-          <p>Name: :js(this.getState('name'))!</p>
-          <p>Gender: :js(this.getState('gender'))!</p>
-          <p>Age :js(this.getState('age'))!</p>
-          <p>Weight: :js(this.getState('weight'))!</p>
-        </fieldset>
+      <fieldset class="cart">
+        <h3>Cart</h3>
+        <p>
+          :js(this.getState('cartItems').length > 0 
+            ? this.getState('cartItems').map(e => e.product).join('<br>')
+            : 'Empty')
+        </p>
+        <hr>
+        Total => <span>:js(this.getState('priceTotal'))</span>
+      </fieldset>
+      <fieldset class="checkout">
+        <h3>Checkout</h3>
+        <form>
+          <label>Payment method</label><br>
+          <input type="radio" value="visa" name="pay" onchange="baseTemplate.setState({payment: 'visa'})" checked>Visa<br>
+          <input type="radio" value="master" name="pay" onchange="baseTemplate.setState({payment: 'master'})">Mastercard<br>
+          :if(this.getState('payment') === 'visa')
+            <p>Enter visa credentials here:</p>
+            <input type="text" placeholder="visa">
+            <p>...</p>
+          :fi
+          :if(this.getState('payment') === 'master')
+            <p>Enter master credentials here:</p>
+            <input type="text" placeholder="master">
+            <p>...</p>
+          :fi
+        </form>
+      </fieldset>
     </div>
   </script>
 
   <!-- Parse -->
   <script>    
     let appNode = document.getElementById('app');
-    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', gender: 'male', age: 65, weight: 80});
+    let baseTemplate = new BaseTemplate(appNode, 'base-template', {cartItems: [], payment: 'visa', priceTotal: 0});
   </script>
 </body>
 </html>

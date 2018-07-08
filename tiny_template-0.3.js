@@ -19,6 +19,7 @@ class TinyTemplate{
 
   setState(newState){
     this.state.setState(newState);
+    console.log(newState);
   }
   getState(prop){
     return this.state.state[prop];
@@ -36,6 +37,7 @@ class TinyTemplate{
       // Evaluate the expression in the context of this template.
       let closingBraceIndex = findClosingBraceIndex(statement);
       let expression = statement.substr(0, closingBraceIndex);
+      console.log(expression);
       let evaluateInContext = (function(){
         return eval(expression);
       }).bind(this);

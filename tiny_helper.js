@@ -21,7 +21,8 @@ let findClosingBraceIndex = function(statement){
     return statement.indexOf(')');
   }else{
     let bracesOpen = 1; 
-    for(let i=statement.indexOf('(');i<5000;++i){
+    for(let i=statement.indexOf('(');;++i){
+      if(i>5000){ throw ('Could not find closing brace within 5000 characters.'); }
       if(statement[i] === '('){ ++bracesOpen; }
       else if(statement[i] === ')'){ --bracesOpen; }
       if(bracesOpen <= 0){ 
