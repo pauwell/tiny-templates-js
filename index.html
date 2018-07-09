@@ -5,6 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TinyTemplatesJs</title>
+  <style>
+    .base-template{
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.3em;
+    }
+    .cart-product{
+      width: 100px; 
+      float: left;
+      background: lightgray;
+    }
+    .cart-price{
+      background: gray;
+      color: white;
+    }
+  </style>
   <script src="tiny_helper.js"></script>
   <script src="tiny_state.js"></script>
   <script src="tiny_template-0.3.js"></script>
@@ -16,14 +31,17 @@
       }
       buy(product, price){
         this.setState({cartItems: this.getState('cartItems').concat({product: product, price: price})});
-        calculateTotalPrice();
+        this.calculateTotalPrice();
       }
       calculateTotalPrice(){
         let price = 0;
         this.getState('cartItems').forEach((product) => {
           price += product.price;
         });
-        setState({priceTotal: price+'$'});
+        this.setState({priceTotal: price});
+      }
+      checkout(){
+        document.getElementById('checkout-dialog').showModal();
       }
     }
   </script>
@@ -41,7 +59,7 @@
     <div class="base-template">
       <h2>Shopping</h2>   
       <fieldset class="buy">
-        <h3>Buy</h3>
+        <legend><h3>Buy</h3></legend>
         <ul>
           <li>Apple 1$ <button onclick="baseTemplate.buy('Apple', 1)">+</button></li>
           <li>Banana 2$ <button onclick="baseTemplate.buy('Banana', 2)">+</button></li>
@@ -49,32 +67,39 @@
         </ul>
       </fieldset>
       <fieldset class="cart">
-        <h3>Cart</h3>
-        <p>
-          :js(this.getState('cartItems').length > 0 
-            ? this.getState('cartItems').map(e => e.product).join('<br>')
-            : 'Empty')
-        </p>
+        <legend><h3>Cart</h3></legend>
+        :js(this.getState('cartItems').length > 0 
+          ? this.getState('cartItems').map(e => `<div class="cart-product">${e.product}</div><div class="cart-price">[${e.price}$]</div>`).join(' ')
+          : 'Empty')
         <hr>
-        Total => <span>:js(this.getState('priceTotal'))</span>
+        <div class="cart-product">Total </div><div class="cart-price"><b>[:js(this.getState('priceTotal'))$]</b></div>
       </fieldset>
       <fieldset class="checkout">
-        <h3>Checkout</h3>
-        <form>
-          <label>Payment method</label><br>
-          <input type="radio" value="visa" name="pay" onchange="baseTemplate.setState({payment: 'visa'})" checked>Visa<br>
-          <input type="radio" value="master" name="pay" onchange="baseTemplate.setState({payment: 'master'})">Mastercard<br>
-          :if(this.getState('payment') === 'visa')
-            <p>Enter visa credentials here:</p>
-            <input type="text" placeholder="visa">
-            <p>...</p>
-          :fi
-          :if(this.getState('payment') === 'master')
-            <p>Enter master credentials here:</p>
-            <input type="text" placeholder="master">
-            <p>...</p>
-          :fi
-        </form>
+        <legend><h3>Checkout</h3></legend>
+        <label>Payment method</label><br>
+        <input type="radio" value="visa" name="pay" onchange="baseTemplate.setState({payment: 'visa'})" checked>Visa<br>
+        <input type="radio" value="master" name="pay" onchange="baseTemplate.setState({payment: 'master'})">Mastercard<br>
+        :if(this.getState('payment') === 'visa')
+          <h3>VISA</h3>
+          <p>Enter visa credentials here:</p>
+          <input type="text" placeholder="visa">
+          <p>...</p>
+        :fi
+        :if(this.getState('payment') === 'master')
+        <h3>MASTER</h3>
+          <p>Enter master credentials here:</p>
+          <!-- @Todo: Bind this.getState('name') to the following input: -->
+          <input type="text" name="credit" onchange="baseTemplate.setState({name: })">
+          <p>...</p>
+        :fi
+        <button onclick="baseTemplate.checkout()">Checkout</button>
+        <dialog id="checkout-dialog">
+          <h3>Thank you for using TinyTemplateJs.</h3>
+          <p>This is a checkout...</p>
+          <p>You have to pay: <hr><h3>[:js(this.getState('priceTotal'))$]</h3></p>
+          <p>Your payment method is :js(this.getState('payment')) from :js(this.getState('name'))</p>
+          <button onclick="this.parentElement.close()">X</button>
+        </dialog>
       </fieldset>
     </div>
   </script>
@@ -82,7 +107,7 @@
   <!-- Parse -->
   <script>    
     let appNode = document.getElementById('app');
-    let baseTemplate = new BaseTemplate(appNode, 'base-template', {cartItems: [], payment: 'visa', priceTotal: 0});
+    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', cartItems: [], payment: 'visa', priceTotal: 0});
   </script>
 </body>
 </html>
