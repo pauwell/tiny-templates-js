@@ -10,6 +10,9 @@
       font-family: Arial, Helvetica, sans-serif;
       font-size: 1.3em;
     }
+    .base-template > fieldset{
+      background: lightgray;
+    }
     .cart-product{
       width: 100px; 
       float: left;
@@ -18,6 +21,17 @@
     .cart-price{
       background: gray;
       color: white;
+      width: fit-content;
+      float: left
+    }
+    dialog{
+      border: 2px solid white;
+      border-radius: 3px;
+      background: gray;
+      color: white;
+    }
+    dialog > button{
+      float: right;
     }
   </style>
   <script src="tiny_helper.js"></script>
@@ -43,6 +57,9 @@
       checkout(){
         document.getElementById('checkout-dialog').showModal();
       }
+      updateName(event){
+        this.setState({name: event.target.value});
+      }
     }
   </script>
 </head>
@@ -50,14 +67,13 @@
   <!-- Application entry -->
   <h1>TinyTemplatesJS</h1>
   <fieldset>
-    <legend><em>Example template</em></legend>
+    <legend><em>Example Shop</em></legend>
     <div id="app"></div>
   </fieldset>
 
   <!-- Example template -->
   <script type="text/html" id="base-template">
-    <div class="base-template">
-      <h2>Shopping</h2>   
+    <div class="base-template"> 
       <fieldset class="buy">
         <legend><h3>Buy</h3></legend>
         <ul>
@@ -69,10 +85,10 @@
       <fieldset class="cart">
         <legend><h3>Cart</h3></legend>
         :js(this.getState('cartItems').length > 0 
-          ? this.getState('cartItems').map(e => `<div class="cart-product">${e.product}</div><div class="cart-price">[${e.price}$]</div>`).join(' ')
+          ? this.getState('cartItems').map(e => `<div class="cart-product">${e.product}</div><div class="cart-price">[${e.price}$]</div>`).join('<br>')
           : 'Empty')
-        <hr>
-        <div class="cart-product">Total </div><div class="cart-price"><b>[:js(this.getState('priceTotal'))$]</b></div>
+        <br>
+        <div><hr>Total <b>:js(this.getState('priceTotal'))$</b></div>
       </fieldset>
       <fieldset class="checkout">
         <legend><h3>Checkout</h3></legend>
@@ -82,29 +98,30 @@
         :if(this.getState('payment') === 'visa')
           <h3>VISA</h3>
           <p>Enter visa credentials here:</p>
-          <input type="text" placeholder="visa">
-          <p>...</p>
+          <input type="text" placeholder="visa" oninput="baseTemplate.updateName(event)">
         :fi
         :if(this.getState('payment') === 'master')
         <h3>MASTER</h3>
           <p>Enter master credentials here:</p>
           <!-- @Todo: Bind this.getState('name') to the following input: -->
-          <input type="text" name="credit" onchange="baseTemplate.setState({name: })">
-          <p>...</p>
+          <input type="text" name="credit" oninput="baseTemplate.updateName(event)">
         :fi
         <button onclick="baseTemplate.checkout()">Checkout</button>
         <dialog id="checkout-dialog">
+          <button onclick="this.parentElement.close()">X</button>
           <h3>Thank you for using TinyTemplateJs.</h3>
           <p>This is a checkout...</p>
-          <p>You have to pay: <hr><h3>[:js(this.getState('priceTotal'))$]</h3></p>
-          <p>Your payment method is :js(this.getState('payment')) from :js(this.getState('name'))</p>
-          <button onclick="this.parentElement.close()">X</button>
+          <p>You have to pay: <h3>[:js(this.getState('priceTotal'))$]</h3></p>
+          <ul>
+            <li>Payment method: :js(this.getState('payment'))</li>
+            <li>Name: :js(this.getState('name'))</li>
+          </ul>
         </dialog>
       </fieldset>
     </div>
   </script>
 
-  <!-- Parse -->
+  <!-- Instantiate & parse -->
   <script>    
     let appNode = document.getElementById('app');
     let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', cartItems: [], payment: 'visa', priceTotal: 0});
