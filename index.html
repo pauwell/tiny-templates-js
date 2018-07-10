@@ -19,8 +19,6 @@
       background: lightgray;
     }
     .cart-price{
-      background: gray;
-      color: white;
       width: fit-content;
       float: left
     }
@@ -57,6 +55,12 @@
       checkout(){
         document.getElementById('checkout-dialog').showModal();
       }
+      removeItem(index){
+        let tmp = this.getState('cartItems');
+        tmp.splice(index, 1);
+        console.log(tmp);
+        this.setState({cartItems: tmp});
+      }
       updateName(event){
         this.setState({name: event.target.value});
       }
@@ -85,7 +89,15 @@
       <fieldset class="cart">
         <legend><h3>Cart</h3></legend>
         :js(this.getState('cartItems').length > 0 
-          ? this.getState('cartItems').map(e => `<div class="cart-product">${e.product}</div><div class="cart-price">[${e.price}$]</div>`).join('<br>')
+          ? this.getState('cartItems').map((e, idx, arr) => `
+            <div class="cart-product">
+              ${e.product}
+            </div>
+            <div class="cart-price">
+              ${e.price}$
+            </div>
+            <button onclick="baseTemplate.removeItem(${idx})">-</button>
+              `).join('<br>')
           : 'Empty')
         <br>
         <div><hr>Total <b>:js(this.getState('priceTotal'))$</b></div>
