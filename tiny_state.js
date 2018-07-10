@@ -12,11 +12,15 @@ class TinyState{
   setState(newState){
     let itHasChanged = false;
     for(let prop in newState){
-      if(this.state.hasOwnProperty(prop) && this.state[prop] != newState[prop]){
+      itHasChanged = true;
+      this.state[prop] = newState[prop]; // Apply changes to state.
+      this.lastChangedProperties.push(prop);
+      // The following 'sucks' at detecting changes.. therefore: dont check for changes ;)
+      /*if(this.state.hasOwnProperty(prop) && this.state[prop] != newState[prop]){
         itHasChanged = true;
         this.state[prop] = newState[prop]; // Apply changes to state.
         this.lastChangedProperties.push(prop);
-      } 
+      } */
     }
      if(itHasChanged){
        this.template.parseView(); // Reparse the template if the state was changed.
