@@ -14,7 +14,7 @@ class TinyState{
     for(let prop in newState){
       itHasChanged = true;
       this.state[prop] = newState[prop]; // Apply changes to state.
-      this.lastChangedProperties.push(prop);
+      this.lastChangedProperties.push(prop); 
       // The following 'sucks' at detecting changes.. therefore: dont check for changes ;)
       /*if(this.state.hasOwnProperty(prop) && this.state[prop] != newState[prop]){
         itHasChanged = true;
