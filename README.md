@@ -5,8 +5,9 @@
 
 <h1>tiny-templates-js</h1>
 
-
-<h2 style="color: red">-- The following is outdated. Will be changed soon. --</h2>
+<hr>
+<h2 color="red">-- The following is outdated. Will be changed soon. --</h2>
+<hr>
 
 
 <p><em>TinyTemplatesJs</em> is a really small (some might even say tiny) template parser written in vanilla javascript.</p>
