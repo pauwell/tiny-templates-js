@@ -6,7 +6,7 @@
 <h1>tiny-templates-js</h1>
 
 <hr>
-<h2 color="red">-- The following is outdated. Will be changed soon. --</h2>
+<h2>-- The following is outdated. Will be changed soon. --</h2>
 <hr>
 
 
