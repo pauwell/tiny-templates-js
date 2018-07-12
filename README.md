@@ -1,7 +1,7 @@
 <p align="center">
  <img border="0" src="https://www.use.com/images/s_1/8cb7c9b49e4c80a73c97.jpg">
 </p>
-<p align="center"><i>A tiny javascript template engine.</i></p>
+<p align="center"><i>A tiny reactive javascript template engine.</i></p>
 
 <h1>tiny-templates-js</h1>
 
