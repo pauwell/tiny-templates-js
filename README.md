@@ -5,6 +5,10 @@
 
 <h1>tiny-templates-js</h1>
 
+
+<h2 style="color: red">-- The following is outdated. Will be changed soon. --</h2>
+
+
 <p><em>TinyTemplatesJs</em> is a really small (some might even say tiny) template parser written in vanilla javascript.</p>
 
 <p>First, let me show you the basic concepts! We start of by creating a simple class that inherits from TinyTemplate and adding a constructor and
