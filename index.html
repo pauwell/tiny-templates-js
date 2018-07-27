@@ -38,8 +38,8 @@
   <script>
     /* Example template. */
     class BaseTemplate extends TinyTemplate{
-      constructor(parent, name, state){
-        super(parent, name, state);
+      constructor(parent, name, state, stringTemplate=null){
+        super(parent, name, state, stringTemplate);
       }
       buy(product, price){
         this.setState({cartItems: this.getState('cartItems').concat({product: product, price: price})});
@@ -60,9 +60,17 @@
         tmp.splice(index, 1);
         console.log(tmp);
         this.setState({cartItems: tmp});
+        this.calculateTotalPrice(); 
       }
       updateName(event){
         this.setState({name: event.target.value});
+      }
+    }
+
+    /* Small counter example. */
+    class CounterTemplate extends TinyTemplate{
+      constructor(parent, name, state, stringTemplate=null){
+        super(parent, name, state, stringTemplate);
       }
     }
   </script>
@@ -76,7 +84,7 @@
   </fieldset>
 
   <!-- Example template -->
-  <script type="text/html" id="base-template">
+  <script type="text/x-template" id="base-template">
     <div class="base-template"> 
       <fieldset class="buy">
         <legend><h3>Buy</h3></legend>
@@ -94,7 +102,7 @@
               ${e.product}
             </div>
             <div class="cart-price">
-              ${e.price}$
+              ${e.price}$ 
             </div>
             <button onclick="baseTemplate.removeItem(${idx})">-</button>
               `).join('<br>')
