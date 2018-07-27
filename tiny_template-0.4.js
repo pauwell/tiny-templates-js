@@ -1,7 +1,7 @@
 "use strict";
 
 class TinyTemplate{
-  constructor(parentNode, name, state){
+  constructor(parentNode, name, state, templateString = null){
     this.name = name;                                  
     this.id = `${name}_${++TinyTemplate.IdCounter}`;   // The unique ids look like this: custom-name_1234
     this.state = new TinyState(this, state);           // All states have to be registered on construction.
@@ -10,7 +10,11 @@ class TinyTemplate{
     this.nodeView[0].id = this.id                                           // Attach unique id to root node.
     parentNode.appendChild(this.nodeView[0].cloneNode(false));              // Attach root-node to parent. 
     document.getElementById(this.name).firstChild.id = this.id;             // Attach id to DOM node, too.
-    this.textView = document.getElementById(this.name).innerHTML;           // Get content as plain text.
+    this.textView = (templateString !== null) // Get content as plain text.
+      ? (templateString)
+      : (document.getElementById(this.name).innerHTML !== null)
+      ? document.getElementById(this.name).innerHTML
+      : `Error! Template string from ${this.name} is null!`;
 
     this.parseView(); // Initial parsing.      
 
@@ -57,6 +61,19 @@ class TinyTemplate{
       splitAtJs[index] = `<span id="${id}">${evaluated}</span>` + statement.substr(closingBraceIndex + 1);
     });
     raw = splitAtJs.join(''); // Write changes to raw.
+
+    //@ NEW:
+
+
+    // :for
+    let splitAtFor = raw.split(':for(');
+
+
+
+    raw = splitAtFor.join('');
+
+    // @ END NEW
+
 
     // :if
     let splitAtIf = raw.split(':if(');
