@@ -2,70 +2,100 @@
  <img border="0" src="https://www.use.com/images/s_1/8cb7c9b49e4c80a73c97.jpg">
 </p>
 <p align="center"><i>A tiny reactive javascript template engine.</i></p>
+<p>Hi</p>
 
-<h1>tiny-templates-js</h1>
+# tiny-templates-js
 
-<hr>
-<h2>-- The following is outdated. Will be changed soon. --</h2>
-<hr>
+<p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in vanilla javascript, using <em>zero</em> dependencies. It embeds in standard HTML syntax using statements between DOM nodes. These statements might be conditions, loops or just in-place evaluated javascript.</p> 
+<p>The HTML combined with the special syntax can now be assigned to template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates DOM nodes accordingly if the data changes.</p>
 
+# Creating your first template
 
-<p><em>TinyTemplatesJs</em> is a really small (some might even say tiny) template parser written in vanilla javascript.</p>
+Let us create a small example template that keeps track of a number. It can increase
+and decrease the number and and outputs it on the screen. 
 
-<p>First, let me show you the basic concepts! We start of by creating a simple class that inherits from TinyTemplate and adding a constructor and
-a method that increment the 'age' property of the internal state.</p>
+## Template:
 
-``` js
-class BaseTemplate extends TinyTemplate{
-  
-  constructor(parent, name, state){
-    super(parent, name, state);
-  }
+We start off by creating our base class that extends the <em>TinyTemplate</em> class and creating the constructor: 
 
-  incrementAge(){ // Changes the internal state.
-    this.state.setState({age: this.state.state['age'] + 1});
-  }
+```js
+class CounterTemplate extends TinyTemplate{
+    constructor(parent, name, state, view=null){
+        super(parent, name, state, view);
+    }
 }
 ```
-<p>Now we add a bit of (pseudo) html that works as the 'view':</p>
 
-``` html
-<script type="text/html" id="base-template">
-  <div>
-    <h1>Hello</h2>
-    <p>Your age is :js(this.state.state['age'])!</p> 
-    <button onclick="baseTemplate.incrementAge()">Increment age</button>
-  </div>
+Lets instantiate our template and assign it to a root node (<code>app</code> in this instance):
+
+```js
+let appNode = document.getElementById('app'); // Entry point.
+
+let counterTemplate = new CounterTemplate(appNode, 'counter-template', {number: 0});
+```
+
+Now you need to provide a view which is a combination of standard HTML markup mixed
+with <em>special statements</em>. These statements introduce logic into our view.
+You can create views in <b>two</b> different ways, both have their pros and cons.
+
+#### 1. Possibility
+Include a string that contains your full view as the last parameter when you construct your custom template:
+```html
+let counterTemplate = new CounterTemplate(..., `
+    <div class="base-template">
+        <p>Hello, World!</p>
+    </div>
+`);
+```
+
+#### 2. Possibility
+Include a script block of type 'text/x-template' in your html file.
+```html
+<script type="text/x-template" id="base-template">
+    <div class="base-template"> 
+        <p>Hello, World!</p> 
+    </div>
 </script>
 ```
 
-<p>As you can see we use traditional html with a few "extras".</p>
-<p>First of all it is embedded in a script-tag in the body that uses <code>text/html</code> as its type. This way the code between the
-script-tags gets ignored by the Browser and we are able to modify it before adding it to the DOM.</p>
+## Statements:
 
-<p>Inside the script tag there must be one root-node that contains all others. In our example that is just a div. All other components must be wrapped inside it.</p>
-
-// Todo...
-
-<p>Now we are just one step away from being able to see the template in the browser: we need to parse it.
-In order to do that we need an entry point in our DOM to which the template should be attached. We will create
-a simple div with the id <var>app</var> as our entry:</p>
-
-``` html
-<div id="app"></div>
+The most basic statement <code>:js</code>, gets evaluated as pure javascript. It basically works as if you would just call eval() on the whole content of the statement in the context of our custom template class. Whatever the
+evaluation returns, gets printed right in place.
+```html
+<p>Welcome, :js(this.getState('name'))!</p><!-- Prints: 'Welcome, Hans!' -->
 ```
 
-<p>And then we instantiate our base-template. </p>
-
-``` js
-let appNode = document.getElementById('app');
-let baseTemplate = new BaseTemplate(appNode, 'base-template', {age: 99});
+The <code>:if</code> statement only renders the containing nodes if the condition inside the braces  (<code>this.getState('payment') === 'visa'</code>) evaluates to true. The statement ends with a :fi. 
+```html
+:if(this.getState('payment') === 'visa') 
+    <p>VISA payment used!</p> <!-- Only visible when the above statement becomes true. --> 
+:fi
 ```
+<em>Right now, there are no nested :if-conditions.</em> 
 
-<p>Now we have successfully created a tiny template.</p>
+If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
+registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be updated in the DOM.
 
-<p>But let us go a bit further. To add a bit of functionality, I would like to show you, 
-what <i>if-conditions</i> and <i>for-loops</i> look like.</p>
-<p>To create an <i>if-condition</i>, we use the blocks <code>:if(<i>expr</i>)</code> and <code>:fi</code>. <code>:if</code> opens a condition which then 
-evaluates the expression inside the braces. If the condition is false everything until the 
-closing <code>:fi</code> block will get the attribute <code>display: none;</code>.</p>
+## Will be implemented soon (beta):
+
+#### :for-loops
+```html
+ :for(let i=0; i<10; ++i)
+    <p>Hi</p> <!-- Gets printed 10 times -->
+ :rof
+```
+#### Right now the solution to render arrays without for-loops is not that great:
+```html
+:js(this.getState('cartItems').length > 0 
+? this.getState('cartItems').map((e, idx, arr) => `
+    <div class="cart-product">
+        ${e.product}
+    </div>
+    <div class="cart-price">
+        ${e.price}$ 
+    </div>
+    <button onclick="baseTemplate.removeItem(${idx})">-</button>
+        `).join('<br>')
+    : 'Empty')
+```
