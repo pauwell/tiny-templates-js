@@ -19,8 +19,8 @@ We start off by creating our base class that extends the <em>TinyTemplate</em> c
 
 ```js
 class CounterTemplate extends TinyTemplate{
-    constructor(parent, name, state, view=null){
-        super(parent, name, state, view);
+    constructor(parent, name, state){
+        super(parent, name, state);
     }
 }
 ```
@@ -33,22 +33,11 @@ let appNode = document.getElementById('app'); // Entry point.
 let counterTemplate = new CounterTemplate(appNode, 'counter-template', {number: 0});
 ```
 
-Now you need to provide a view which is a combination of standard HTML markup mixed
+<p>Now you need to provide a view which is a combination of standard HTML markup mixed
 with <em>special statements</em>. These statements introduce logic into our view.
-You can create views in <b>two</b> different ways, both have their pros and cons.
+Let's create a view!</p>
+<p>Include a script block of type 'text/x-template' in your html file with an id that matches the template's name.</p>
 
-#### 1. Possibility
-Include a string that contains your full view as the last parameter when you construct your custom template:
-```html
-let counterTemplate = new CounterTemplate(..., `
-    <div class="base-template">
-        <p>Hello, World!</p>
-    </div>
-`);
-```
-
-#### 2. Possibility
-Include a script block of type 'text/x-template' in your html file.
 ```html
 <script type="text/x-template" id="base-template">
     <div class="base-template"> 

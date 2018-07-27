@@ -34,12 +34,12 @@
   </style>
   <script src="tiny_helper.js"></script>
   <script src="tiny_state.js"></script>
-  <script src="tiny_template-0.3.js"></script>
+  <script src="tiny_template-0.4.js"></script>
   <script>
     /* Example template. */
     class BaseTemplate extends TinyTemplate{
-      constructor(parent, name, state, stringTemplate=null){
-        super(parent, name, state, stringTemplate);
+      constructor(parent, name, state){
+        super(parent, name, state);
       }
       buy(product, price){
         this.setState({cartItems: this.getState('cartItems').concat({product: product, price: price})});
@@ -69,8 +69,8 @@
 
     /* Small counter example. */
     class CounterTemplate extends TinyTemplate{
-      constructor(parent, name, state, stringTemplate=null){
-        super(parent, name, state, stringTemplate);
+      constructor(parent, name, state){
+        super(parent, name, state);
       }
     }
   </script>
