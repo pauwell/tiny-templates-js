@@ -1,5 +1,5 @@
 <p align="center">
- <img border="0" src="https://www.use.com/images/s_1/8cb7c9b49e4c80a73c97.jpg">
+ <img border="0" src="https://www.use.com/images/s_4/458aa15416c5728ef689.jpg">
 </p>
 <p align="center"><i>A tiny reactive javascript template engine.</i></p>
 
