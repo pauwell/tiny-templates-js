@@ -57,18 +57,23 @@ class TinyTemplate{
     });
     raw = splitAtJs.join(''); // Write changes to raw.
 
-    //@ NEW:
-
-
     // :for
     let splitAtFor = raw.split(':for(');
 
+    splitAtFor.forEach((statement, index, arr) => {
+      if(index===0) return;
 
+      let closingBraceIndex = findClosingBraceIndex(statement);
+      let loopExpression = statement.substr(0, closingBraceIndex);
+      let loopContent = statement.substring(closingBraceIndex + 1, statement.indexOf(':rof')).trim();
+      splitAtFor[index] = statement.substr(statement.indexOf(':rof') + 4);
 
+      eval(`for(${loopExpression}){ 
+        splitAtFor[index] = loopContent + splitAtFor[index];
+      }`);
+
+    });
     raw = splitAtFor.join('');
-
-    // @ END NEW
-
 
     // :if
     let splitAtIf = raw.split(':if(');
@@ -102,6 +107,7 @@ class TinyTemplate{
       splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '</span>');
     });
     raw = splitAtIf.join(''); // Write changes to raw.
+
 
     // Get the root container of the template from the DOM.
     let activeDomNode = document.getElementById(this.id); 

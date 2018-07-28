@@ -6,12 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TinyTemplatesJs</title>
   <style>
-    .base-template{
+    .test-shop{
       font-family: Arial, Helvetica, sans-serif;
       font-size: 1.3em;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: baseline;
     }
-    .base-template > fieldset{
+    .test-shop > fieldset{
       background: lightgray;
+      width: 30%;
     }
     .cart-product{
       width: 100px; 
@@ -36,8 +40,8 @@
   <script src="tiny_state.js"></script>
   <script src="tiny_template-0.4.js"></script>
   <script>
-    /* Example template. */
-    class BaseTemplate extends TinyTemplate{
+    /* Test shop template. */
+    class TestShop extends TinyTemplate{
       constructor(parent, name, state){
         super(parent, name, state);
       }
@@ -66,32 +70,27 @@
         this.setState({name: event.target.value});
       }
     }
-
-    /* Small counter example. */
-    class CounterTemplate extends TinyTemplate{
-      constructor(parent, name, state){
-        super(parent, name, state);
-      }
-    }
   </script>
 </head>
 <body>
   <!-- Application entry -->
   <h1>TinyTemplatesJS</h1>
   <fieldset>
-    <legend><em>Example Shop</em></legend>
+    <legend><em>Test Shop</em></legend>
     <div id="app"></div>
   </fieldset>
 
   <!-- Example template -->
-  <script type="text/x-template" id="base-template">
-    <div class="base-template"> 
+  <script type="text/x-template" id="test-shop">
+    <div class="test-shop"> 
       <fieldset class="buy">
         <legend><h3>Buy</h3></legend>
         <ul>
-          <li>Apple 1$ <button onclick="baseTemplate.buy('Apple', 1)">+</button></li>
-          <li>Banana 2$ <button onclick="baseTemplate.buy('Banana', 2)">+</button></li>
-          <li>Orange 4$ <button onclick="baseTemplate.buy('Orange', 4)">+</button></li>
+          :for(let i=0; i<3; ++i)
+            <li>Apple 1$ <button onclick="testShop.buy('Apple', 1)">+</button></li>
+            <li>Banana 2$ <button onclick="testShop.buy('Banana', 2)">+</button></li>
+            <li>Orange 4$ <button onclick="testShop.buy('Orange', 4)">+</button></li>
+          :rof
         </ul>
       </fieldset>
       <fieldset class="cart">
@@ -104,7 +103,7 @@
             <div class="cart-price">
               ${e.price}$ 
             </div>
-            <button onclick="baseTemplate.removeItem(${idx})">-</button>
+            <button onclick="testShop.removeItem(${idx})">-</button>
               `).join('<br>')
           : 'Empty')
         <br>
@@ -113,20 +112,19 @@
       <fieldset class="checkout">
         <legend><h3>Checkout</h3></legend>
         <label>Payment method</label><br>
-        <input type="radio" value="visa" name="pay" onchange="baseTemplate.setState({payment: 'visa'})" checked>Visa<br>
-        <input type="radio" value="master" name="pay" onchange="baseTemplate.setState({payment: 'master'})">Mastercard<br>
+        <input type="radio" value="visa" name="pay" onchange="testShop.setState({payment: 'visa'})" checked>Visa<br>
+        <input type="radio" value="master" name="pay" onchange="testShop.setState({payment: 'master'})">Mastercard<br>
         :if(this.getState('payment') === 'visa')
           <h3>VISA</h3>
           <p>Enter visa credentials here:</p>
-          <input type="text" placeholder="visa" oninput="baseTemplate.updateName(event)">
+          <input type="text" placeholder="visa" name="credit" oninput="testShop.updateName(event)">
         :fi
         :if(this.getState('payment') === 'master')
         <h3>MASTER</h3>
           <p>Enter master credentials here:</p>
-          <!-- @Todo: Bind this.getState('name') to the following input: -->
-          <input type="text" name="credit" oninput="baseTemplate.updateName(event)">
+          <input type="text" placeholder="master" name="credit" oninput="testShop.updateName(event)">
         :fi
-        <button onclick="baseTemplate.checkout()">Checkout</button>
+        <button onclick="testShop.checkout()">Checkout</button>
         <dialog id="checkout-dialog">
           <button onclick="this.parentElement.close()">X</button>
           <h3>Thank you for using TinyTemplateJs.</h3>
@@ -144,7 +142,7 @@
   <!-- Instantiate & parse -->
   <script>    
     let appNode = document.getElementById('app');
-    let baseTemplate = new BaseTemplate(appNode, 'base-template', {name: '', cartItems: [], payment: 'visa', priceTotal: 0});
+    let testShop = new TestShop(appNode, 'test-shop', {name: '', cartItems: [], payment: 'visa', priceTotal: 0});
   </script>
 </body>
 </html>
