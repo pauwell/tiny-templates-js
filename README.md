@@ -8,6 +8,10 @@
 <p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in vanilla javascript, using <em>zero</em> dependencies. It embeds in standard HTML syntax using statements between DOM nodes. These statements might be conditions, loops or just in-place evaluated javascript.</p> 
 <p>The HTML combined with the special syntax can now be assigned to template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates DOM nodes accordingly if the data changes.</p>
 
+# Why bother using it?
+
+Let's say you are working on a project and suddenly you have the need for in-place templating syntax and reactiveness (for example a form), then you could easily include TinyTemplateJS to manage it without having to worry about potentially big and bloated libraries. TinyTemplateJS is easy to integrate into your running project without introducing much overhead. Just create the data in a seperate js-file and insert the view in-place in the html-file where it will be displayed. Then just instantiate your template class, add it to a root aaand.. voilà!
+
 # Creating your first template
 
 Let us create a small example template that keeps track of a number. It can increase
@@ -46,6 +50,13 @@ Let's create a view!</p>
 </script>
 ```
 
+## State
+
+
+
+<p>If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
+registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be updated in the DOM.</p>
+
 ## Statements:
 
 The most basic statement <code>:js</code>, gets evaluated as pure javascript. It basically works as if you would just call eval() on the whole content of the statement in the context of our custom template class. Whatever the
@@ -62,18 +73,15 @@ The <code>:if</code> statement only renders the containing nodes if the conditio
 ```
 <em>Right now, there are no nested :if-conditions.</em> 
 
-If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
-registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be updated in the DOM.
-
-## Will be implemented soon (beta):
-
-#### :for-loops
+## :for-loops
 ```html
  :for(let i=0; i<10; ++i)
     <p>Hi</p> <!-- Gets printed 10 times -->
  :rof
 ```
-#### Right now the solution to render arrays without for-loops is not that great:
+<em>Right now, there are no nested :for-loops.</em> 
+
+#### If you need more complex loops try the followin workaround for now (will be updated):
 ```html
 :js(this.getState('cartItems').length > 0 
 ? this.getState('cartItems').map((e, idx, arr) => `
