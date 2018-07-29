@@ -91,6 +91,9 @@
             <li>Banana 2$ <button onclick="testShop.buy('Banana', 2)">+</button></li>
             <li>Orange 4$ <button onclick="testShop.buy('Orange', 4)">+</button></li>
           :rof
+          :for(fruit in this.getState('cartItems'))
+            <li>Name: :take(fruit.product), Price: :take(fruit.price)</li>
+          :rof
         </ul>
       </fieldset>
       <fieldset class="cart">
