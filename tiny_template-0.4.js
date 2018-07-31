@@ -86,53 +86,35 @@ class TinyTemplate{
       let iterLoopMatch = loopExpression.match(/\w*\sin\s.*/);
       if(iterLoopMatch === null){
         splitAtFor[index] = '</span>' + splitAtFor[index];
-        // Evaluate default for-loop (i=0; i<n; ++i)
+        // Evaluate default for-loop (i=0; i<n; ++i).
         eval(`for(${loopExpression}){ 
           splitAtFor[index] = loopContent + splitAtFor[index];
         }`);
         splitAtFor[index] = `<span id="${id}">${splitAtFor[index]}`;
       }else{
-
-        console.log(iterLoopMatch[0]);
-        let paramVar = iterLoopMatch[0].split(' in ')[0];
-        let paramList= iterLoopMatch[0].split(' in ')[1];
-        console.log(paramVar + ", " + paramList);
-        console.log(eval(`${paramList}`));
-        console.log("Loop content:");
-        console.log(loopContent);
         splitAtFor[index] = '</span>' + splitAtFor[index];
 
-        let parsedContent = '';
-
+        // Evaluate range based for-loop (for x in array).
+        let paramVar = iterLoopMatch[0].split(' in ')[0];
+        let paramList= iterLoopMatch[0].split(' in ')[1];
         eval(`
           ${paramList}.forEach((${paramVar}, idx, arr) => {
-            console.log("loop content: ");
-            console.log(loopContent);
+            let parsedContent = '';
             let takes = loopContent.split(':take(');
-            takes.forEach((take, i, _) => {
-              if(i===0) return;
-              console.log("Starting ");
-              console.log('TAKE: ' + take);
+            takes.forEach((take, index, _) => {
+              if(index===0) return;
               let takeClosingBraceIndex = findClosingBraceIndex(take);
               let content = take.substr(0, takeClosingBraceIndex);
-              console.log("take content: " + content);
-              console.log(this);
-              console.log(eval(content));
               if(parsedContent.length === 0){ 
-                parsedContent = loopContent.replace(take.substr(0, takeClosingBraceIndex), eval(content));
-                console.log("Parsed content: ");
-                console.log(parsedContent);
+                parsedContent = loopContent.replace(take.substr(0, takeClosingBraceIndex+1), eval(content));
               }else{
-                parsedContent = parsedContent.replace(take.substr(0, takeClosingBraceIndex), eval(content));
-                console.log("Else Parsed content: ");
-                console.log(parsedContent);
+                parsedContent = parsedContent.replace(take.substr(0, takeClosingBraceIndex+1), eval(content));
               }
-              console.log(take.substr(takeClosingBraceIndex));
             });
-            splitAtFor[index] = parsedContent + splitAtFor[index];
+            splitAtFor[index] = (parsedContent + splitAtFor[index]).split(':take(').join('');
+            parsedContent = "";
           });`
         );
-
         splitAtFor[index] = `<span id="${id}">${splitAtFor[index]}`;
       }
     });
