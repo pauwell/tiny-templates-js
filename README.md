@@ -9,16 +9,14 @@
 <p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in vanilla javascript, using <em>zero</em> dependencies. It embeds in standard HTML syntax using statements between DOM nodes. These statements might be conditions, loops or just in-place evaluated javascript.</p> 
 <p>The HTML combined with the special syntax can now be assigned to template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates DOM nodes accordingly if the data changes.</p>
 
-## Why/when could I use it?
+## Why use it?
 <p>Let's say you are working on a project and suddenly you have the need for in-place templating syntax and reactiveness (for example a form), then you could easily include TinyTemplateJS to manage it without having to worry about potentially big and bloated libraries. TinyTemplateJS is easy to integrate into your running project without introducing much overhead. Just create the data in a seperate js-file and insert the view in-place in the html-file where it will be displayed. Then just instantiate your template class, add it to a root aaand.. voilà!</p>
 
 # Creating your first template
-
 Let us create a small example template that keeps track of a number. It can increase
 and decrease the number and and outputs it on the screen. 
 
 ## Templates
-
 We start off by creating our base class that extends the <em>TinyTemplate</em> class and creating the constructor: 
 
 ```js
@@ -51,7 +49,6 @@ Let's create a view!</p>
 ```
 
 ## State
-
 <p>If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
 registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be updated in the DOM.</p>
 
