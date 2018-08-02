@@ -66,6 +66,10 @@
         this.setState({cartItems: tmp});
         this.calculateTotalPrice(); 
       }
+      removeAllItems(){
+        this.setState({cartItems: []});
+        this.calculateTotalPrice();
+      }
       updateName(event){
         this.setState({name: event.target.value});
       }
@@ -86,11 +90,9 @@
       <fieldset class="buy">
         <legend><h3>Buy</h3></legend>
         <ul>
-          :for(let i=0; i<3; ++i) <!-- Just a test -->
-            <li>Apple 1$ <button onclick="testShop.buy('Apple', 1)">+</button></li>
-            <li>Banana 2$ <button onclick="testShop.buy('Banana', 2)">+</button></li>
-            <li>Orange 4$ <button onclick="testShop.buy('Orange', 4)">+</button></li>
-          :rof
+          <li>Apple 1$ <button onclick="testShop.buy('Apple', 1)">+</button></li>
+          <li>Banana 2$ <button onclick="testShop.buy('Banana', 2)">+</button></li>
+          <li>Orange 4$ <button onclick="testShop.buy('Orange', 4)">+</button></li>
         </ul>
       </fieldset>
       <fieldset class="cart">
@@ -102,7 +104,10 @@
           <br>
         :rof
         <br>
-        <div><hr>Total <b>:js(this.getState('priceTotal'))$</b></div>
+        <div>
+          <hr>Total <b>:js(this.getState('priceTotal'))$</b>
+          <button onclick="testShop.removeAllItems()">Alle entfernen</button>
+        </div>
       </fieldset>
       <fieldset class="checkout">
         <legend><h3>Checkout</h3></legend>
