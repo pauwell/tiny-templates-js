@@ -34,7 +34,7 @@ class TinyTemplate{
       if(index===0) return;
       
       // Evaluate the expression in the context of this template.
-      let closingBraceIndex = findClosingBraceIndex(statement);
+      let closingBraceIndex = findCloser(statement, '(', ')');
       let expression = statement.substr(0, closingBraceIndex);
       console.log(expression);
       let evaluateInContext = (function(){
@@ -67,10 +67,10 @@ class TinyTemplate{
       console.log(statement);
 
       // Parse the content of the :for loop.
-      let closingBraceIndex = findClosingBraceIndex(statement);
+      let closingBraceIndex = findCloser(statement, '(', ')');
       let loopExpression = statement.substr(0, closingBraceIndex);
-      let loopContent = statement.substring(closingBraceIndex + 1, statement.indexOf(':rof')).trim();
-      splitAtFor[index] = statement.substr(statement.indexOf(':rof') + 4);
+      let loopContent = statement.substring(closingBraceIndex + 1,  findCloser(statement, ':for(', ':rof')).trim();  
+      splitAtFor[index] = statement.substr(findCloser(statement, ':for(', ':rof') + 4);
       
        // Create ID.
        let id = `for_${index}`;
@@ -103,7 +103,7 @@ class TinyTemplate{
             let takes = loopContent.split(':take(');
             takes.forEach((take, index, _) => {
               if(index===0) return;
-              let takeClosingBraceIndex = findClosingBraceIndex(take);
+              let takeClosingBraceIndex = findCloser(take, '(', ')');
               let content = take.substr(0, takeClosingBraceIndex);
               if(parsedContent.length === 0){ 
                 parsedContent = loopContent.replace(take.substr(0, takeClosingBraceIndex+1), eval(content));
@@ -126,7 +126,7 @@ class TinyTemplate{
       if(index===0) return;
     
       // Evaluate the expression in the context of this template.
-      let closingBraceIndex = findClosingBraceIndex(statement);
+      let closingBraceIndex = findCloser(statement, '(', ')');
       let expression = statement.substr(0, closingBraceIndex);
       let evaluateInContext = (function(){
         return eval(expression);
@@ -146,13 +146,14 @@ class TinyTemplate{
 
       // Remove content if statement evaluated to false.
       statement = (evaluated === false) ?
-        `<span id="${id}">` + statement.substr(statement.indexOf(':fi'))
+        `<span id="${id}">` + statement.substr(findCloser(statement, ':if(', ':fi'))
       : `<span id="${id}">` + statement.substr(closingBraceIndex + 1);
 
-      splitAtIf[index] = statement.replace(RegExp.escape(':fi'), '</span>');
+      splitAtIf[index] = statement.replace(
+        new RegExp(RegExp.escape(':fi'), 'g'), '</span>'  //@ Dont replace the first :fi but the corresponding one.
+      );
     });
     raw = splitAtIf.join(''); // Write changes to raw.
-
 
     // Get the root container of the template from the DOM.
     let activeDomNode = document.getElementById(this.id); 

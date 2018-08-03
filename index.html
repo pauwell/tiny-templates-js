@@ -15,7 +15,7 @@
     }
     .test-shop > fieldset{
       background: lightgray;
-      width: 30%;
+      width: 22%;
     }
     .cart-product{
       width: 100px; 
@@ -87,6 +87,17 @@
   <!-- Example template -->
   <script type="text/x-template" id="test-shop">
     <div class="test-shop"> 
+      <fieldset>
+        <legend><h3>Test :if</h3></legend>
+        :if(1==1)
+          :if(2==2)
+            <p>Level2</p>
+            :if(3==3)
+              <p>Secret</p>
+            :fi
+          :fi
+        :fi
+      </fieldset>
       <fieldset class="buy">
         <legend><h3>Buy</h3></legend>
         <ul>

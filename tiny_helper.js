@@ -14,20 +14,32 @@ RegExp.escape = function(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 };
 
-/* Find the index of the closing brace to the first occuring opening brace.
+/* Find the index of the closing statement (')', ':fi', ':rof').
+  @param statement  The string that is searched.
+  @param opener     The symbol of any opening statements.
+  @param closer     The symbol of the closing statements.
+  @param maxStatementLength The maximum range of characters to search.
 */
-let findClosingBraceIndex = function(statement){
-  if(statement.indexOf(')')< statement.indexOf('(')){
-    return statement.indexOf(')');
+let findCloser = function(statement, opener, closer, maxStatementLength=5000){
+  
+  let openerIndex = statement.indexOf(opener);
+  let closerIndex = statement.indexOf(closer);
+
+  if(closerIndex < openerIndex){
+    return closerIndex;
   }else{
-    let bracesOpen = 1; 
-    for(let i=statement.indexOf('(');;++i){
-      if(i>5000){ throw ('Could not find closing brace within 5000 characters.'); }
-      if(statement[i] === '('){ ++bracesOpen; }
-      else if(statement[i] === ')'){ --bracesOpen; }
-      if(bracesOpen <= 0){ 
-        return i; 
-      }
-    }
+    
+    let openerCount = 1;
+    
+    for(let i=openerIndex;;++i){
+      if(i>maxStatementLength){ throw(`Could not find closing statement within ${maxStatementLength} characters.`); }
+      
+      let tail = statement.substr(i);
+      if(tail.startsWith(opener)){ ++openerCount; }
+      else if(tail.startsWith(closer)){ --openerCount; }
+      
+      if(openerCount <= 0){ return i; }
+    } 
   }
+  return -1;
 }
