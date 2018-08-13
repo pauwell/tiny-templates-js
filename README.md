@@ -3,6 +3,12 @@
 </p>
 <p align="center"><i>A tiny reactive javascript template engine.</i></p>
 
+![Packagist Pre Release](https://img.shields.io/packagist/vpre/symfony/symfony.svg?style=for-the-badge)
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=for-the-badge)
+![Coveralls github branch](https://img.shields.io/coveralls/github/jekyll/jekyll/master.svg?style=for-the-badge)
+
+
+
 # Tiny Templates JS
 
 ## Summary
