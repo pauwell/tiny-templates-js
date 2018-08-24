@@ -5,6 +5,10 @@
 
 # Tiny Templates JS
 
+![Packagist Pre Release](https://img.shields.io/packagist/vpre/symfony/symfony.svg?style=for-the-badge)
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg?style=for-the-badge)
+![Coveralls github branch](https://img.shields.io/coveralls/github/jekyll/jekyll/master.svg?style=for-the-badge)
+
 ## Summary
 <p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in vanilla javascript, using <em>zero</em> dependencies. It embeds in standard HTML syntax using statements between DOM nodes. These statements might be conditions, loops or just in-place evaluated javascript.</p> 
 <p>The HTML combined with the special syntax can now be assigned to template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates DOM nodes accordingly if the data changes.</p>
