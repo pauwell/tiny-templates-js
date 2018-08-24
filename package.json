@@ -1,0 +1,35 @@
+{
+  "name": "tiny-templates",
+  "version": "0.6.0",
+  "description": "A tiny reactive javascript engine with templates.",
+  "main": "tiny-template-0.6.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pauwell/tiny-templates-js.git"
+  },
+  "keywords": [
+    "tiny",
+    "template",
+    "react",
+    "reactive",
+    "javascript",
+    "pauwell"
+  ],
+  "author": "Paul Bernitz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pauwell/tiny-templates-js/issues"
+  },
+  "homepage": "https://github.com/pauwell/tiny-templates-js#readme",
+  "dependencies": {
+    "diff-dom": "^2.4.0",
+    "watchify": "^3.11.0"
+  }
+}
