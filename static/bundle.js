@@ -1574,26 +1574,37 @@
 const diffDom = require("diff-dom");
 
 module.exports = class TinyTemplate {
-  constructor(name, state, stringView) {
+  // Constructor.
+  constructor(name, state, methods, stringView) {
     this._name = name;
     this._stringView = stringView;
     this._activeNodes = null;
     this._state = state;
-    this._changedState = [];
+    this._methods = methods;
+    this._rootNode = null;
+  }
+
+  /* Defines a root node and registers the template.
+    After the initial call of updateView it becomes active.*/
+  mount(rootNode) {
+    this._rootNode = rootNode;
+    this.updateView();
+  }
+
+  // The member functions of the template.
+  methods() {
+    return this._methods;
   }
 
   // If a state-value changes, the view must be reparsed.
   changeState(newState) {
-    console.log("hi");
     let hasChanged = false;
     for (let prop in newState) {
       hasChanged = true;
       this._state[prop] = newState[prop]; // Apply changes to state.
-      this._changedState.push(prop);
     }
     if (hasChanged) {
       this.updateView(); // Reparse the template if the state was changed.
-      this._changedState = []; // Reset after parsing.
     }
   }
 
@@ -1655,6 +1666,7 @@ module.exports = class TinyTemplate {
         let loopExpression = `let ${loopVar}=${loopFrom}; 
         ${loopVar}<${loopTo}; 
         ${loopVar}+=${loopStep}`;
+        console.log(loopExpression);
 
         // Execute the expression in 'this' context.
         let evaluateInContext = function() {
@@ -1675,8 +1687,44 @@ module.exports = class TinyTemplate {
         }.bind(this);
         evaluateInContext();
 
+        // @Todo: Use an alternative to eval:
+        /*let evaluateInContext = new Function(
+          "node",
+          "newNode",
+          "parseLocalMustaches",
+          "loopVar",
+          "idCount",
+          `for(${loopExpression}){
+          [...node.childNodes].forEach(childElem => {
+            if(childElem.nodeType != 1) 
+              return;
+            let clonedNode = childElem.cloneNode(true);
+            clonedNode.innerHTML = parseLocalMustaches(
+              clonedNode.innerHTML, 
+              {key: loopVar, value: (new Function('loopVar','return loopVar'))(loopVar)}, 
+              idCount
+            );
+            newNode.appendChild(clonedNode);
+          });
+        }`
+        ).bind(this);
+        evaluateInContext(node, newNode, parseLocalMustaches, loopVar, idCount);*/
+
         // Insert the new node.
         node.parentNode.replaceChild(newNode, node);
+      }
+
+      //> Parse event handlers on nodes.
+      let eventNodes = parsedNodes.querySelectorAll("*[on-event][call]");
+      for (let node of eventNodes) {
+        console.log(node);
+        let eventVar = node.getAttribute("on-event");
+        let methodVar = node.getAttribute("call");
+
+        node.addEventListener(eventVar, this.methods()[methodVar].bind(this));
+
+        node.removeAttribute("on-event");
+        node.removeAttribute("call");
       }
 
       // Stop parsing if the maximum number of iterations was reached.
@@ -1703,19 +1751,16 @@ module.exports = class TinyTemplate {
       // Initial render.
       this._activeNodes = updatedNodes;
 
-      document.getElementById("app").appendChild(updatedNodes); // @Todo: Don't use id.
+      this._rootNode.appendChild(updatedNodes);
     } else {
       // Detect and patch changes in the DOM.
       let dd = new diffDom(); // https://github.com/fiduswriter/diffDOM
-      let activeChildNodes = document.getElementById(this._name).childNodes; // @Todo: Don't use id.
+      let activeChildNodes = this._rootNode.firstChild.childNodes;
       let updatedChildNodes = updatedNodes.childNodes;
-      console.log(activeChildNodes);
-      console.log(updatedChildNodes);
 
       for (let i = 0; i < activeChildNodes.length; ++i) {
         // Detect differences between the old and the new view.
         let diffs = dd.diff(activeChildNodes[i], updatedChildNodes[i]);
-        console.log(diffs);
 
         // Patch those differences if necessary.
         dd.apply(activeChildNodes[i], diffs);
@@ -1744,10 +1789,7 @@ let parseStateMustaches = function(view, state, idCount) {
     if (state.hasOwnProperty(key)) {
       let keyRegexp = new RegExp(`{{\\s*${key}\\s*}}`);
       while (keyRegexp.test(stringView) === true) {
-        stringView = stringView.replace(
-          keyRegexp,
-          `<span id="mustache-${++idCount.count}">${state[key]}</span>`
-        );
+        stringView = stringView.replace(keyRegexp, state[key]);
       }
     }
   }
