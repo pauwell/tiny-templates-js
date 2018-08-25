@@ -1,0 +1,1 @@
+watchify src/tiny-template-0.6.js --standalone TinyTemplate -o static/bundle.js

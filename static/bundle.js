@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TinyTemplate = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function(root, factory) {
     if (typeof exports !== 'undefined') {
         if (typeof module !== 'undefined' && module.exports) {
@@ -1580,6 +1580,9 @@ module.exports = class TinyTemplate {
     this._activeNodes = null;
     this._state = state;
     this._changedState = [];
+
+    //this.changeState = this.changeState.bind(this);
+    //this.getState = this.getState.bind(this);
   }
 
   // If a state-value changes, the view must be reparsed.
@@ -1699,10 +1702,10 @@ module.exports = class TinyTemplate {
   // Does the parsing of the template and patching with the DOM.
   updateView() {
     let updatedNodes = this.parseView();
-
     if (this._activeNodes === null) {
       // Initial render.
       this._activeNodes = updatedNodes;
+
       document.getElementById("app").appendChild(updatedNodes); // @Todo: Don't use id.
     } else {
       // Detect and patch changes in the DOM.
@@ -1769,43 +1772,5 @@ let parseLocalMustaches = function(view, localVar, idCount) {
   return stringView;
 };
 
-},{"diff-dom":1}],3:[function(require,module,exports){
-const TinyTemplate = require("../../src/tiny-template-0.6.js");
-
-// Test template.
-let myTemplate = new TinyTemplate(
-  "my-template",
-  { name: "my-template", age: 99, counter: 0 },
-  /*html*/ `
-  <div id="my-template">
-    <button onclick="myTemplate.changeState({'age': myTemplate.getState('age') + 1})">Increment age</button>
-    <p id="lvl-1">[Lvl-1]</p> 
-    <if expr="1==1">
-      <div id="content">
-          <if expr="1==1">
-            <p id="lvl-2a">[Lvl-2a] Name: {{ name }}</p>
-          </if> 
-          <if expr="2==2">
-            <p id="lvl-2b">[Lvl-2b] Age: {{ age }}</p> 
-          </if> 
-      </div>
-    </if>
-    <button onclick="myTemplate.changeState({'counter': myTemplate.getState('counter') + 1})">Update counter {{ counter }}</button>
-    <for var="j" from="0" to="this.getState('counter')" step="1">
-      <hr>
-      <b>Hello this is {{ j }}</b>
-      <div>
-        <for var="i" from="this.getState('age')" to="this.getState('age') + 10" step="1">
-          <p>Brand new syntax with mustache: {{ name }}, {{j}},{{ i }}!!</p>
-        </for>
-      </div>
-    </for>
-    <for each="elem" in="list">
-      <p>Hi</p>
-    </for>
-  </div>`
-);
-
-myTemplate.updateView();
-
-},{"../../src/tiny-template-0.6.js":2}]},{},[3]);
+},{"diff-dom":1}]},{},[2])(2)
+});

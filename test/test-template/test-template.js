@@ -1,4 +1,4 @@
-const TinyTemplate = require("../../src/tiny-template-0.6.js");
+"use strict";
 
 // Test template.
 let myTemplate = new TinyTemplate(
@@ -6,7 +6,7 @@ let myTemplate = new TinyTemplate(
   { name: "my-template", age: 99, counter: 0 },
   /*html*/ `
   <div id="my-template">
-    <button onclick="myTemplate.changeState({'age': myTemplate.getState('age') + 1})">Increment age</button>
+    <button onclick="myTemplate.changeState({ 'age': myTemplate.getState('age') + 1 })">Increment age</button>
     <p id="lvl-1">[Lvl-1]</p> 
     <if expr="1==1">
       <div id="content">

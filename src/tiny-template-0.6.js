@@ -9,6 +9,9 @@ module.exports = class TinyTemplate {
     this._activeNodes = null;
     this._state = state;
     this._changedState = [];
+
+    //this.changeState = this.changeState.bind(this);
+    //this.getState = this.getState.bind(this);
   }
 
   // If a state-value changes, the view must be reparsed.
@@ -128,10 +131,10 @@ module.exports = class TinyTemplate {
   // Does the parsing of the template and patching with the DOM.
   updateView() {
     let updatedNodes = this.parseView();
-
     if (this._activeNodes === null) {
       // Initial render.
       this._activeNodes = updatedNodes;
+
       document.getElementById("app").appendChild(updatedNodes); // @Todo: Don't use id.
     } else {
       // Detect and patch changes in the DOM.
