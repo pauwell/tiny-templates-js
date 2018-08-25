@@ -1580,9 +1580,6 @@ module.exports = class TinyTemplate {
     this._activeNodes = null;
     this._state = state;
     this._changedState = [];
-
-    //this.changeState = this.changeState.bind(this);
-    //this.getState = this.getState.bind(this);
   }
 
   // If a state-value changes, the view must be reparsed.

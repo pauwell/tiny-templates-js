@@ -12,34 +12,6 @@
   <div id="app"></div>
   <script src="static/bundle.js"></script>
   <script src="test/test-template/test-template.js"></script>
-  <script>
-
-
-
-
-    // @Todo: 
-
-    // Messed up the context of invoking the state changing. Maybe bind 'this' to state changes. 
-    // Fix the 'onclick-problem'
-
-    /*
-      Es läuft nicht, weil es keine möglichkeit für den onclick handler die funktion überhaupt zu kennen,
-      da diese weit weg definiert ist. Für den parser ist es bloß eine undefinierte Funktion.
-      Lösung: Entweder das Template immer im selben context wie das aktuelle DOM haltem
-      ODER: ein eigenes event system nutzen... ouhh...
-    */
-
-
-    // 1) Remove the span-id-tags around the statement tags and around mustache values.
-
-    // 2) Use mustaches in attributes. Nice to read: <for var="i" from="{{ counter }} to="{{ age }}">
-
-    // 3) Use an alternative to eval() when parsing.
-
-    // 4) Rewrite shop-test with new syntax.
-
-    // 5) Need a hook to call initial updateView under the hood after template creation:
-  </script>
 </body>
 
 </html>

@@ -9,14 +9,10 @@ module.exports = class TinyTemplate {
     this._activeNodes = null;
     this._state = state;
     this._changedState = [];
-
-    //this.changeState = this.changeState.bind(this);
-    //this.getState = this.getState.bind(this);
   }
 
   // If a state-value changes, the view must be reparsed.
   changeState(newState) {
-    console.log("hi");
     let hasChanged = false;
     for (let prop in newState) {
       hasChanged = true;
@@ -141,13 +137,10 @@ module.exports = class TinyTemplate {
       let dd = new diffDom(); // https://github.com/fiduswriter/diffDOM
       let activeChildNodes = document.getElementById(this._name).childNodes; // @Todo: Don't use id.
       let updatedChildNodes = updatedNodes.childNodes;
-      console.log(activeChildNodes);
-      console.log(updatedChildNodes);
 
       for (let i = 0; i < activeChildNodes.length; ++i) {
         // Detect differences between the old and the new view.
         let diffs = dd.diff(activeChildNodes[i], updatedChildNodes[i]);
-        console.log(diffs);
 
         // Patch those differences if necessary.
         dd.apply(activeChildNodes[i], diffs);

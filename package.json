@@ -4,7 +4,6 @@
   "description": "A tiny reactive javascript engine with templates.",
   "main": "tiny-template-0.6.js",
   "directories": {
-    "lib": "lib",
     "test": "test"
   },
   "scripts": {
