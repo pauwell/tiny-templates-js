@@ -1666,29 +1666,8 @@ module.exports = class TinyTemplate {
         let loopExpression = `let ${loopVar}=${loopFrom}; 
         ${loopVar}<${loopTo}; 
         ${loopVar}+=${loopStep}`;
-        console.log(loopExpression);
 
-        // Execute the expression in 'this' context.
-        let evaluateInContext = function() {
-          return eval(`
-        for(${loopExpression}){
-          [...node.childNodes].forEach(childElem => {
-            if(childElem.nodeType != 1) 
-              return;
-            let clonedNode = childElem.cloneNode(true);
-            clonedNode.innerHTML = parseLocalMustaches(
-              clonedNode.innerHTML, 
-              {key: loopVar, value: eval(loopVar)}, 
-              idCount
-            );
-            newNode.appendChild(clonedNode);
-          });
-        }`);
-        }.bind(this);
-        evaluateInContext();
-
-        // @Todo: Use an alternative to eval:
-        /*let evaluateInContext = new Function(
+        let evaluateInContext = new Function(
           "node",
           "newNode",
           "parseLocalMustaches",
@@ -1701,14 +1680,14 @@ module.exports = class TinyTemplate {
             let clonedNode = childElem.cloneNode(true);
             clonedNode.innerHTML = parseLocalMustaches(
               clonedNode.innerHTML, 
-              {key: loopVar, value: (new Function('loopVar','return loopVar'))(loopVar)}, 
+              {key: loopVar, value: eval(loopVar)}, 
               idCount
             );
             newNode.appendChild(clonedNode);
           });
         }`
         ).bind(this);
-        evaluateInContext(node, newNode, parseLocalMustaches, loopVar, idCount);*/
+        evaluateInContext(node, newNode, parseLocalMustaches, loopVar, idCount);
 
         // Insert the new node.
         node.parentNode.replaceChild(newNode, node);
