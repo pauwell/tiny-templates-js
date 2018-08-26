@@ -122,6 +122,25 @@ module.exports = class TinyTemplate {
         node.parentNode.replaceChild(newNode, node);
       }
 
+      //> Parse the foreach-loop nodes.
+      let foreachNodes = parsedNodes.querySelectorAll("for[each][in]");
+      for (let node of foreachNodes) {
+        // Create a new node.
+        let newNode = document.createElement("span");
+        newNode.id = `foreach-${++idCount.count}`;
+
+        // Create the loop-expression.
+        let loopEach = node.getAttribute("each");
+        let loopIn = eval(node.getAttribute("in"));
+        /*
+          Turn into foreach:
+        let loopExpression = `let ${loopVar}=${loopFrom}; 
+        ${loopVar}<${loopTo}; 
+        ${loopVar}+=${loopStep}`;*/
+
+        // @ Todo: Finish foreach-loops.
+      }
+
       //> Parse event handlers on nodes.
       let eventNodes = parsedNodes.querySelectorAll("*[on-event][call]");
       for (let node of eventNodes) {
@@ -129,7 +148,9 @@ module.exports = class TinyTemplate {
         let eventVar = node.getAttribute("on-event");
         let methodVar = node.getAttribute("call");
 
-        node.addEventListener(eventVar, this.methods()[methodVar].bind(this));
+        if (eventVar.length !== 0 && this.methods().hasOwnProperty(methodVar)) {
+          node.addEventListener(eventVar, this.methods()[methodVar].bind(this));
+        }
 
         node.removeAttribute("on-event");
         node.removeAttribute("call");
@@ -162,7 +183,8 @@ module.exports = class TinyTemplate {
       this._rootNode.appendChild(updatedNodes);
     } else {
       // Detect and patch changes in the DOM.
-      let dd = new diffDom(); // https://github.com/fiduswriter/diffDOM
+      // https://github.com/fiduswriter/diffDOM
+      let dd = new diffDom({ valueDiffing: false });
       let activeChildNodes = this._rootNode.firstChild.childNodes;
       let updatedChildNodes = updatedNodes.childNodes;
 
