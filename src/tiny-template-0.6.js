@@ -50,11 +50,7 @@ module.exports = class TinyTemplate {
     let idCount = { count: 0 };
 
     // Parse all mustaches that contain state-data.
-    let parsedView = parseStateMustaches(
-      this._stringView,
-      this._state,
-      idCount
-    );
+    let parsedView = parseStateMustaches(this._stringView, this._state);
 
     // Convert the string-view into DOM nodes.
     let parsedNodes = parseHTML(parsedView)[0];
@@ -109,8 +105,7 @@ module.exports = class TinyTemplate {
             let clonedNode = childElem.cloneNode(true);
             clonedNode.innerHTML = parseLocalMustaches(
               clonedNode.innerHTML, 
-              {key: loopVar, value: eval(loopVar)}, 
-              idCount
+              {key: loopVar, value: eval(loopVar)}
             );
             newNode.appendChild(clonedNode);
           });
@@ -123,28 +118,52 @@ module.exports = class TinyTemplate {
       }
 
       //> Parse the foreach-loop nodes.
-      let foreachNodes = parsedNodes.querySelectorAll("for[each][in]");
+      let foreachNodes = parsedNodes.querySelectorAll("foreach[elem][in]");
       for (let node of foreachNodes) {
         // Create a new node.
         let newNode = document.createElement("span");
         newNode.id = `foreach-${++idCount.count}`;
 
-        // Create the loop-expression.
-        let loopEach = node.getAttribute("each");
-        let loopIn = eval(node.getAttribute("in"));
-        /*
-          Turn into foreach:
-        let loopExpression = `let ${loopVar}=${loopFrom}; 
-        ${loopVar}<${loopTo}; 
-        ${loopVar}+=${loopStep}`;*/
+        let loopElem = node.getAttribute("elem");
+        let loopIdx = node.hasAttribute("idx") ? node.getAttribute("idx") : "_";
+        let loopArr = node.hasAttribute("arr") ? node.getAttribute("arr") : "_";
+        let loopIn = node.getAttribute("in");
 
-        // @ Todo: Finish foreach-loops.
+        let evaluateInContext = new Function(
+          "node",
+          "newNode",
+          "parseLocalMustaches",
+          "idCount",
+          `${loopIn}.forEach((${loopElem},${loopIdx},${loopArr}) => {
+            [...node.childNodes].forEach(childElem => {
+              if(childElem.nodeType != 1) 
+                return;
+              let clonedNode = childElem.cloneNode(true);
+              clonedNode.innerHTML = parseLocalMustaches(
+                clonedNode.innerHTML, 
+                {key: '${loopElem}', value: ${loopElem}}
+              );
+              clonedNode.innerHTML = parseLocalMustaches(
+                clonedNode.innerHTML,
+                {key: '${loopIdx}', value: ${loopIdx}}
+              );
+              clonedNode.innerHTML = parseLocalMustaches(
+                clonedNode.innerHTML,
+                {key: '${loopArr}', value: ${loopArr}}
+              );
+              newNode.appendChild(clonedNode);
+            });
+        });`
+        ).bind(this);
+        evaluateInContext(node, newNode, parseLocalMustaches, idCount);
+
+        // Insert the new node.
+        node.parentNode.replaceChild(newNode, node);
       }
 
       //> Parse event handlers on nodes.
       let eventNodes = parsedNodes.querySelectorAll("*[on-event][call]");
       for (let node of eventNodes) {
-        console.log(node);
         let eventVar = node.getAttribute("on-event");
         let methodVar = node.getAttribute("call");
 
@@ -211,7 +230,7 @@ let parseHTML = function(str) {
 
 /* Search for mustaches '{{ _ }}' and evaluate them to their
   corresponding state-values. Return the parsed string. */
-let parseStateMustaches = function(view, state, idCount) {
+let parseStateMustaches = function(view, state) {
   let stringView = view;
 
   // Replace state-variables.
@@ -228,15 +247,22 @@ let parseStateMustaches = function(view, state, idCount) {
 
 /* Find mustaches that contain local variables and evaluate them.
   Return the parsed string. */
-let parseLocalMustaches = function(view, localVar, idCount) {
+let parseLocalMustaches = function(view, localVar) {
   let stringView = view;
   if (stringView === undefined) {
     return "";
   }
 
-  // Search for occurrences in the view-string and replace all matches.
-  let keyRegexp = new RegExp(`{{\\s*${localVar.key}\\s*}}`, "g");
-  stringView = stringView.replace(keyRegexp, localVar.value);
+  let keyRegexp = new RegExp(`({{\\s*${localVar.key}(.(\\w+))?\\s*}})`);
+  const RegexpMatch = stringView.match(keyRegexp);
+
+  if (RegexpMatch !== null && RegexpMatch[0].indexOf(".") !== -1) {
+    // {{ obj.prop }}
+    stringView = stringView.replace(keyRegexp, localVar.value[RegexpMatch[3]]);
+  } else {
+    // {{ obj }}
+    stringView = stringView.replace(keyRegexp, localVar.value);
+  }
 
   return stringView;
 };

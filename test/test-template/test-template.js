@@ -6,7 +6,14 @@ let myTemplate = new TinyTemplate(
   {
     name: "my-template",
     age: 99,
-    counter: 0
+    counter: 0,
+    animals: [
+      { name: "Tiger" },
+      { name: "Giraffe" },
+      { name: "Kangoroo" },
+      { name: "Duck" },
+      { name: "Harambe" }
+    ]
   },
   {
     increaseAge: function() {
@@ -24,7 +31,6 @@ let myTemplate = new TinyTemplate(
     <button on-event="click" call="increaseAge">Increment age</button>
     <label>Input age</label>
     <input type="number" on-event="input" call="readAgeFromInput">
-    <input type="text" placeholder="This value gets lost on update :/">
     <p id="lvl-1">[Lvl-1]</p> 
     <if expr="1==1">
       <div id="content">
@@ -46,9 +52,10 @@ let myTemplate = new TinyTemplate(
         </for>
       </div>
     </for>
-    <for each="elem" in="list">
-      <p>Hi</p>
-    </for>
+    <h3>Animals:</h3>
+    <foreach elem="elem" idx="i" arr="arr" in="this.getState('animals')">
+      <p>#{{i}}: {{elem.name}} from List [{{ arr }}]!</p>
+    </foreach>
   </div>`
 );
 
