@@ -11,7 +11,9 @@ let myTemplate = new TinyTemplate(
   {
     increaseAge: function() {
       this.changeState({ age: this.getState("age") + 1 });
-      console.log(this);
+    },
+    readAgeFromInput: function() {
+      this.changeState({ age: parseInt(event.target.value) });
     },
     increaseCounter: function() {
       this.changeState({ counter: this.getState("counter") + 1 });
@@ -20,6 +22,9 @@ let myTemplate = new TinyTemplate(
   /*html*/ `
   <div id="my-template">
     <button on-event="click" call="increaseAge">Increment age</button>
+    <label>Input age</label>
+    <input type="number" on-event="input" call="readAgeFromInput">
+    <input type="text" placeholder="This value gets lost on update :/">
     <p id="lvl-1">[Lvl-1]</p> 
     <if expr="1==1">
       <div id="content">
