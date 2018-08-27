@@ -19,7 +19,7 @@ and reset a number that is stored in its state and output its value on the scree
 
 ## Example
 
-We start off by creating an instance of <code>TinyTemplate</code> which is the base class for any templates.
+We start off by creating an instance of <code>TinyTemplate</code> which is the base class for any template.
 The constructor of <code>TinyTemplate</code> looks like this:
 
 ```js
@@ -31,7 +31,13 @@ constructor(
 );
 ```
 
-It takes a <code>name</code> that is used to uniquely identify the template, a <code>state</code> object that contains all the reactive data members, the <code>methods</code> object, which stores all methods and last but not least the <code>stringView</code>.
+<p>It takes a <code>name</code> that is used to uniquely identify the template, a <code>state</code> object that contains all the reactive data members, the <code>methods</code> object, which stores all class-methods and the html-like <code>stringView</code>.
+Let us create an instance of <code>TinyTemplate</code> for our counter. We give it the name _counter_ and and then add a property to the state called <code>number</code>. This property is now a reactive state member of our template which means that every time this member is changed via setState(), the whole stringView gets reparsed and differences to the currrent view are written to the DOM. Now it is time to add some functionality. The methods-object takes functions so let's pass two of them:</p> 
+ <ol>
+ <li><code>increaseNumber</code>: increment <code>number</code> by one.</li>
+ <li><code>reset</code>: sets <code>number</code> back to zero.</li>
+ </ol>
+<p>Now we only have to create the <code>stringView</code> and then we should be good to go. It consists of one root node (!) with a fieldset inside that shows our number and a button for each of our two functions. To display our state value we use mustache syntax. To attach an onclick event to a node you should use the <code>on-event</code> and <code>call</code> attributes. You can use the standard html5 event attributes (e.g. onclick="") but those will lead to context problems if the template is not available inside the html file that renders this template (_this_ will not be available).</p>
 
 ```js
 let counterTemplate = new TinyTemplate(
