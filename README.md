@@ -1,5 +1,5 @@
 <p align="center">
- <img border="0" src="https://www.use.com/images/s_4/458aa15416c5728ef689.jpg">
+ <img border="0" src="https://www.use.com/images/s_4/869ad401f7edda1d1add.jpg">
 </p>
 
 # Tiny Templates JS
@@ -7,133 +7,162 @@
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/pauwell/tiny-templates-js/blob/master/LICENSE)
 [![Generic badge](https://img.shields.io/badge/version-0.6-<COLOR>.svg)](https://github.com/pauwell/tiny-templates-js/)
 
-## DEPRECATED!!!
+# Summary
 
-## Summary
+<p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in javascript, using <em>diffDOM</em> dependencies. It embeds in standard HTML syntax using special DOM nodes that work as statements. These statements might be conditions, loops or mustaches.</p> 
+<p>The HTML string template combined with the special syntax can now be assigned as a view to the template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates the containing DOM nodes accordingly if the data changes. To detect these changes, we use <a href="https://github.com/fiduswriter/diffDOM"> diffDOM</a> which is able to spot changes between two node-lists and patch these changes in as little steps as possible.</p>
 
-<p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in vanilla javascript, using <em>zero</em> dependencies. It embeds in standard HTML syntax using statements between DOM nodes. These statements might be conditions, loops or just in-place evaluated javascript.</p> 
-<p>The HTML combined with the special syntax can now be assigned to template classes that are defined by the user. These template-classes can store data in form of state. The engine can keep track of the state of any template and updates DOM nodes accordingly if the data changes.</p>
+# Creating our first template
 
-# Creating your first template
+Let us create a small template as an example that just keeps track of a number. It can increase
+and reset the number and output its value on the screen. If you need the full source code to follow along please have a look right **here**!
 
-Let us create a small example template that keeps track of a number. It can increase
-and decrease the number and and outputs it on the screen.
+## Example
 
-## Templates
-
-We start off by creating our base class that extends the <em>TinyTemplate</em> class and creating the constructor:
-
-```js
-class CounterTemplate extends TinyTemplate {
-  constructor(parent, name, state) {
-    super(parent, name, state);
-  }
-}
-```
-
-Lets instantiate our template and assign it to a root node (<code>app</code> in this instance):
+We start off by creating an instance of the basic template <code>TinyTemplate</code>.
+The constructor looks like this:
 
 ```js
-let appNode = document.getElementById("app"); // Entry point.
-
-let counterTemplate = new CounterTemplate(appNode, "counter-template", {
-  number: 0
-});
+constructor(name, state, methods, stringView);
 ```
 
-<p>Now you need to provide a view which is a combination of standard HTML markup mixed
-with <em>special statements</em>. These statements introduce logic into our view.
-Let's create a view!</p>
-<p>Include a script block of type <code>text/x-template</code> in your html file with an id that matches the template's name.</p>
+The template takes a <code>name</code> that is used to uniquely identify it, a <code>state</code> object that contains all reactive data member, the <code>methods</code> object, which keeps track of all methods and last but not least the <code>view</code> in form of a string.
+
+```js
+let counterTemplate = new TinyTemplate(
+  /* name */
+  "counter",
+  /* state */
+  {
+    number: 0
+  },
+  /* methods */
+  {
+    increaseNumber: function() {
+      this.changeState({ number: this.getState("number") + 1 });
+    },
+    reset: function() {
+      this.changeState({ number: 0 });
+    }
+  },
+  /* stringView */
+  `<div class="counter">
+        <fieldset>
+            <legend><b>Counter</b></legend>
+            <p>Counting: {{number}}</p>
+            <button on-event="click" call="increaseNumber">Increment</button>
+            <button on-event="click" call="reset">Reset</button>
+        </fieldset>
+    </div>`
+);
+```
+
+Lets instantiate our template and mount it to a root node (<code>app</code> in this instance):
+
+```js
+counterTemplate.mount(document.getElementById("app"));
+```
+
+Our basic template should now be visible in the DOM underneath the specified root-node. How all the parts work in detail is explained further below.
+
+## Parsing the string-view
+
+### Mustaches
+
+Double mustaches inside the <code>stringView</code> are replaced by their corresponding value. The parser first takes the value inside the mustaches and searches for it in the state-object, if it is not in the state it checks wether the value is a local variable and replaces it. It is also possible to access the properties of those variables:
 
 ```html
-<script type="text/x-template" id="base-template">
-    <div class="base-template">
-        <p>Hello, World!</p>
-    </div>
-</script>
+<p>Access: {{stateObject}}</p>
+<p>Access: {{localVariable}}</p>
+<p>Access: {{localVariable.property}}</p>
 ```
 
-## State
+### State-changes
 
 <p>If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
-registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be updated in the DOM.</p>
+registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be update in the DOM.</p>
 
-## Statements
-
-### :js
-
-The most basic statement <code>:js</code>, gets evaluated as pure javascript. It basically works as if you would just call eval() on the whole content of the statement in the context of our custom template class. Whatever the
-evaluation returns, gets printed right in place.
-
-```html
-<p>Welcome, :js(this.getState('name'))!</p><!-- Prints: 'Welcome, Hans!' -->
+```js
+this.changeState({ number: this.getState("number") + 1 });
 ```
 
-### :if
+### Statements
 
-The <code>:if</code> statement only renders the containing nodes if the condition inside the braces (<code>this.getState('payment') === 'visa'</code>) evaluates to true. The statement ends with a <code>:fi</code>.
+#### if
+
+The <code>if</code> statement only renders the containing nodes if the condition (<code>expr</code>) inside the braces (<code>this.getState('payment') === 'visa'</code>) evaluates to true. The statement ends with a <code>/fi</code>.
 
 ```html
-:if(this.getState('payment') === 'visa')
+<if expr="{{payment}} === 'visa'")>
     <p>VISA payment used!</p> <!-- Only visible when the above statement becomes true. -->
-:fi
+</fi>
 ```
 
-Is is also possible to nest <code>:if</code> statements.
+#### for
 
 ```html
-:if(1==1)
-    <p>Depth 1</p>
-    :if(2==2)
-        <p>Depth 2</p>
-    :fi
-:fi
+<for var="j" from="0" to="{{max}}" step="2">
+    <p>Counting: {{ j }}</p>
+</for>
+```
 
-<!-- Converts to: -->
-<span id="if_?">
+#### foreach
+
+```html
+<foreach elem="elem" idx="i" arr="arr" in="this.getState('animals')">
+    <div class="cart-product">{{fruit.product}}</div>
+    <div class="cart-price">{{fruit.price}}</div>
+    <br>
+</foreach>
+```
+
+### Statement nesting
+
+Is is possible to nest <em>all</em> statements!
+The following...
+
+```html
+<if expr="1==1">
     <p>Depth 1</p>
-    <span id="if_?">
+    <if expr="2==2">
         <p>Depth 2</p>
+        <for var="i" from="0" to="3" step="1">
+            <foreach elem="elem" idx="idx" in="this.getState('animals')">
+                <p>[{{i}},{{idx}}] => {{elem.name}}</p>
+            </foreach>
+        </for>
+    </fi>
+</fi>
+```
+
+...converts to:
+
+```html
+<span id="if_1">
+    <p>Depth 1</p>
+    <span id="if_2">
+        <p>Depth 2</p>
+        <span id="for_3">
+            <span id="for_4">
+                <p>[0, 0] => Tiger</p>
+                <p>[0, 1] => Shark</p>
+                <p>[0, 2] => Turtle</p>
+            </span>
+            <span id="for_5">
+                <p>[1, 0] => Tiger</p>
+                <p>[1, 1] => Shark</p>
+                <p>[1, 2] => Turtle</p>
+            </span>
+            <span id="for_6">
+                <p>[2, 0] => Tiger</p>
+                <p>[2, 1] => Shark</p>
+                <p>[2, 2] => Turtle</p>
+            </span>
+        </span>
     </span>
 </span>
 ```
 
-### :take
-
-These statements are only used inside conditions and loops. They work almost exactly like the <code>:js</code>-statements, but <code>:take</code> gets executed in the context of the loop and not the context of the class.
-
-```html
-    :for(item in list)
-        <p>:take(item.name)</p><!-- Accesses the name property of the current item. -->
-    :rof
-```
-
-<em>Tip: Inside range-based loops, <code>:take(idx)</code> returns the current index!</em>
-
-## Loops
-
-### :for (Traditional)
-
-```html
- :for(let i=0; i<10; ++i)
-    <p>Hi</p> <!-- Gets printed 10 times -->
- :rof
-```
-
-<em>Right now, there are no nested <code>:for</code>-loops.</em>
-
-### :for (Range based)
-
-```html
-    :for(fruit in this.getState('cartItems'))
-        <div class="cart-product">:take(fruit.product)</div>
-        <div class="cart-price">:take(fruit.price)$</div>
-        <button onclick="testShop.removeItem(:take(idx))">-</button>
-        <br>
-    :rof
-```
-
-<em>You can access all loop-related variables by using the <code>:take</code>-statement.</em> The statement using <code>:take(idx)</code> is evaluated to the current index. This is baked in the engine and must not be provided by the user. In fact it is forbidden(!) to reassign <code>idx</code> inside a loop's body.
+Have fun building your own tiny templates.
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/pauwell) <em>@Paul Bernitz 2018</em>
