@@ -9,7 +9,7 @@
 
 # Summary
 
-<p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in javascript. It embeds in standard HTML syntax using special DOM nodes that work as statements. These statements might be conditions, loops or mustaches.</p> 
+<p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in javascript. It embeds in standard HTML syntax using special DOM nodes that work as statements. These statements might be conditions or loops.</p>
 <p>The HTML string template combined with the additional syntax nodes are displayed as the view in the DOM. The template can store data in form of state. The engine then keeps track of the state for any template and updates the DOM nodes accordingly if the data changes. <a href="https://github.com/fiduswriter/diffDOM"> diffDOM</a> is used to detect these changes. It is able to spot differences between two node-lists and is able to patch these changes in as few steps as possible.</p>
 
 # Creating our first template
