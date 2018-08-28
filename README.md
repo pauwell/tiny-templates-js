@@ -111,6 +111,8 @@ The <code>if</code> statement only renders the containing nodes if the condition
 
 #### for
 
+<p>Use <code>for</code> loops to render nodes multiple times. The syntax should be self explaining. The first attribute <code>var</code> declares the index variable, <code>from</code> and <code>to</code> define the range of the loop and <code>step</code> is used to determine the number by which the index variable increments each cycle. The index variable <code>j</code> can be accessed from anywhere inside the loop using the 'mustache' syntax.</p>
+
 ```html
 <for var="j" from="0" to="{{max}}" step="2">
     <p>Counting: {{ j }}</p>
@@ -118,6 +120,8 @@ The <code>if</code> statement only renders the containing nodes if the condition
 ```
 
 #### foreach
+
+<p>The <code>foreach</code> loop is the range based counterpart to the standard <code>for</code> loop we talked about before. It consists of four attributes of which at least two have to be provided. It is crucial to pass the <code>elem</code> attribute which contains the current list item (or contains the name of the variable that contains the current list item to be more precise) and the list itself, via <code>in</code>. The other two optional attributes are the index counter (<code>idx</code>) and  <code>arr</code>, which contains the array itself.</p>
 
 ```html
 <foreach elem="elem" idx="i" arr="arr" in="this.getState('animals')">
