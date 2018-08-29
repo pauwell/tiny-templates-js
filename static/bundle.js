@@ -1824,15 +1824,21 @@ let parseLocalMustaches = function(view, localVar) {
     return "";
   }
 
-  let keyRegexp = new RegExp(`({{\\s*${localVar.key}(.(\\w+))?\\s*}})`);
-  const RegexpMatch = stringView.match(keyRegexp);
+  let keyRegexp = new RegExp(`{{\\s*(${localVar.key})(|\\s+|\.[^}]*)}}`);
+  const RegexpMatch = stringView.match(keyRegexp, localVar.value);
 
-  if (RegexpMatch !== null && RegexpMatch[0].indexOf(".") !== -1) {
-    // {{ obj.prop }}
-    stringView = stringView.replace(keyRegexp, localVar.value[RegexpMatch[3]]);
-  } else {
-    // {{ obj }}
-    stringView = stringView.replace(keyRegexp, localVar.value);
+  // @Todo: If there are multiple statements only the first gets found.
+  // Look at test-template for example on list render {{elem.name}}
+
+  if (RegexpMatch !== null) {
+    if (typeof localVar.value === "object" && /\S/.test(RegexpMatch[2])) {
+      // Insert the corresponding object and evaluate the expression on it.
+      let foo = new Function("obj", "return obj" + RegexpMatch[2]);
+      stringView = stringView.replace(keyRegexp, foo(localVar.value));
+    } else {
+      // If there is only the value without an expression, just insert it.
+      stringView = stringView.replace(keyRegexp, localVar.value);
+    }
   }
 
   return stringView;
