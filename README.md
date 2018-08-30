@@ -7,6 +7,8 @@
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/pauwell/tiny-templates-js/blob/master/LICENSE)
 [![Generic badge](https://img.shields.io/badge/version-0.6-<COLOR>.svg)](https://github.com/pauwell/tiny-templates-js/)
 
+(Under construction :construction: )
+
 # Summary
 
 <p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in javascript. It embeds in standard HTML syntax using special DOM nodes that work as statements. These statements might be conditions or loops.</p>
