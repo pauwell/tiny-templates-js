@@ -9,17 +9,17 @@
 
 (Under construction :construction: )
 
-# Summary
+# What?
 
 <p><em>TinyTemplatesJs</em> is a tiny reactive template engine written in javascript. It embeds in standard HTML syntax using special DOM nodes that work as statements. These statements might be conditions or loops.</p>
 <p>The HTML string template combined with the additional syntax nodes are displayed as the view in the DOM. The template can store data in form of state. The engine then keeps track of the state for any template and updates the DOM nodes accordingly if the data changes. <a href="https://github.com/fiduswriter/diffDOM"> diffDOM</a> is used to detect these changes. It is able to spot differences between two node-lists and is able to patch these changes in as few steps as possible.</p>
 
-# Creating our first template
+# Templates
 
 Let us create a small template as an example first, that works as a basic counter. It can increase
 and reset a number that is stored in its state and output its value on the screen. There will also be a reset button to set the number back to zero. If you want the full source code to follow along please have a look right **here**!
 
-## Example
+## Usage
 
 We start off by creating an instance of <code>TinyTemplate</code> which is the base class for any template.
 The constructor of <code>TinyTemplate</code> looks like this:
@@ -135,7 +135,7 @@ The <code>if</code> statement only renders the containing nodes if the condition
 
 ### Statement nesting
 
-Is is possible to nest <em>all</em> statements!
+Is is possible to nest <em>every</em> statement!
 The following...
 
 ```html
@@ -179,7 +179,7 @@ The following...
     </span>
 </span>
 ```
-
-Have fun building your own tiny templates.
+As you can see the <em>statement</em> nodes are replaced by a simple span.  
+Have fun building your own templates with tiny-templates-js.
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/pauwell) <em>@Paul Bernitz 2018</em>
