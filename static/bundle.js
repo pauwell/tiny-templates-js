@@ -1677,7 +1677,7 @@ module.exports = class TinyTemplate {
             newNode.appendChild(clonedNode);
             clonedNode.outerHTML = parseLocalMustaches(
               clonedNode.outerHTML, 
-              {key: loopVar, value: eval(loopVar)}
+              [{key: loopVar, value: eval(loopVar)}]
             );
           });
         }`
@@ -1711,19 +1711,13 @@ module.exports = class TinyTemplate {
                 return;
               let clonedNode = childElem.cloneNode(true);
               newNode.appendChild(clonedNode);
-              clonedNode.innerHTML = parseLocalMustaches(
-                clonedNode.innerHTML, 
-                {key: '${loopElem}', value: ${loopElem}}
+              clonedNode.outerHTML = parseLocalMustaches(
+                clonedNode.outerHTML, [
+                  {key: '${loopElem}', value: ${loopElem}},
+                  {key: '${loopIdx}', value: ${loopIdx}},
+                  {key: '${loopArr}', value: ${loopArr}}
+                ]
               );
-              clonedNode.innerHTML = parseLocalMustaches(
-                clonedNode.innerHTML,
-                {key: '${loopIdx}', value: ${loopIdx}}
-              );
-              clonedNode.innerHTML = parseLocalMustaches(
-                clonedNode.innerHTML,
-                {key: '${loopArr}', value: ${loopArr}}
-              );
-              
             });
         });`
         ).bind(this);
@@ -1808,10 +1802,6 @@ let parseStateMustaches = function(view, state) {
     return "";
   }
 
-  console.log("Parsing state mustache for:");
-  console.log(state);
-  console.log(view);
-
   for (let key in state) {
     if (state.hasOwnProperty(key)) {
       let keyRegexp = new RegExp(`{{\\s*(${key})(|\\s+|\.[^}]*)}}`);
@@ -1836,29 +1826,27 @@ let parseStateMustaches = function(view, state) {
 
 /* Find mustaches that contain local variables and evaluate them.
   Return the parsed string. */
-let parseLocalMustaches = function(view, localVar) {
+let parseLocalMustaches = function(view, localVars) {
   let stringView = view;
   if (stringView === undefined) {
     return "";
   }
 
-  console.log("Parsing local mustache for:");
-  console.log(localVar);
-  console.log(view);
+  localVars.forEach(localVar => {
+    let keyRegexp = new RegExp(`{{\\s*(${localVar.key})(|\\s+|\.[^}]*)}}`);
+    let regexpMatch;
+    while ((regexpMatch = stringView.match(keyRegexp, localVar.value))) {
+      if (/\S/.test(regexpMatch[2])) {
+        // Insert the corresponding object and evaluate the expression on it.
+        let foo = new Function("obj", "return obj" + regexpMatch[2]);
 
-  let keyRegexp = new RegExp(`{{\\s*(${localVar.key})(|\\s+|\.[^}]*)}}`);
-  let regexpMatch;
-  while ((regexpMatch = stringView.match(keyRegexp, localVar.value))) {
-    if (/\S/.test(regexpMatch[2])) {
-      // Insert the corresponding object and evaluate the expression on it.
-      let foo = new Function("obj", "return obj" + regexpMatch[2]);
-
-      stringView = stringView.replace(keyRegexp, foo(localVar.value));
-    } else {
-      // If there is only the value without an expression, just insert it.
-      stringView = stringView.replace(keyRegexp, localVar.value);
+        stringView = stringView.replace(keyRegexp, foo(localVar.value));
+      } else {
+        // If there is only the value without an expression, just insert it.
+        stringView = stringView.replace(keyRegexp, localVar.value);
+      }
     }
-  }
+  });
 
   return stringView;
 };
