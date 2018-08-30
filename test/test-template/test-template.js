@@ -35,7 +35,7 @@ let myTemplate = new TinyTemplate(
     <if expr="1==1">
       <div id="content">
           <if expr="1==1">
-            <p id="lvl-2a">[Lvl-2a] Name: {{name}}</p>
+            <p id="lvl-2a">[Lvl-2a] Name: {{name.split('-').join(' ').toUpperCase()}}</p>
           </if> 
           <if expr="2==2">
             <p id="lvl-2b">[Lvl-2b] Age: {{age}}</p> 
@@ -44,9 +44,9 @@ let myTemplate = new TinyTemplate(
     </if>
     <button on-event="click" call="increaseCounter">Update counter {{ counter }}</button>
     <for var="j" from="0" to="{{counter}}" step="1">
-      <hr>
+      <hr class="{{j}}">
       <b>Hello this is {{ j }}</b>
-      <div>
+      <div class="{{ j }}">
         <for var="i" from="{{age}}" to="{{age}} + 10" step="1">
           <p>Brand new syntax with mustache: {{name}}, {{ j }},{{ i }}!!</p>
         </for>
@@ -54,6 +54,7 @@ let myTemplate = new TinyTemplate(
     </for>
     <h3>Animals:</h3>
     <foreach elem="elem" idx="i" arr="arr" in="this.getState('animals')">
+      <div class="{{idx}}"></div><!-- Fails -->
       <p>#{{i}}: {{elem.name}},{{elem.name}} from List [{{ arr }}]!</p>
     </foreach>
   </div>`

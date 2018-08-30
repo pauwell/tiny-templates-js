@@ -74,7 +74,7 @@ let testShop = new TinyTemplate(
       <foreach elem="item" idx="idx" in="this.getState('cartItems')">
         <div class="cart-product">{{item.product}}</div>
         <div class="cart-price">{{item.price}}</div>
-        <button on-event="click" call="" onclick="testShop.removeItem({{idx}})">-</button>
+        <button on-event="click" call="removeItem" args="{{idx}}"?? onclick="testShop.removeItem({{idx}})">-</button>
       </foreach>
       <br>
       <div>
