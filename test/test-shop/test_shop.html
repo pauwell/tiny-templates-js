@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
   <script src="../tiny_state.js"></script>
   <script src="../tiny_template-0.5.js"></script>
 </head>
+
 <body>
   <!-- Application entry -->
   <h1>TinyTemplatesJS</h1>
@@ -19,83 +21,27 @@
     <div id="app"></div>
   </fieldset>
 
-  <!-- Example template -->
-  <script type="text/x-template" id="test-shop">
-    <div class="test-shop"> 
-      <fieldset class="buy">
-        <legend><h3>Buy</h3></legend>
-        <ul>
-          :for(item in this.getState('items'))
-            <li>
-              :take(item.product) :take(item.price)$ 
-              <button onclick="testShop.buy(:take(idx))">+</button>
-            </li>  
-          :rof
-        </ul>
-      </fieldset>
-      <fieldset class="cart">
-        <legend><h3>Cart</h3></legend>
-        :for(item in this.getState('cartItems'))
-          <div class="cart-product">:take(item.product)</div>
-          <div class="cart-price">:take(item.price)$</div>
-          <button onclick="testShop.removeItem(:take(idx))">-</button>
-          <br>
-        :rof
-        <br>
-        <div>
-          <hr>Total <b>:js(this.getState('priceTotal'))$</b>
-          <button onclick="testShop.removeAllItems()">Alle entfernen</button>
-        </div>
-      </fieldset>
-      <fieldset class="checkout">
-        <legend><h3>Checkout</h3></legend>
-        <label>Payment method</label><br>
-        <input type="radio" value="visa" name="pay" onchange="testShop.setState({payment: 'visa'})" checked>Visa<br>
-        <input type="radio" value="master" name="pay" onchange="testShop.setState({payment: 'master'})">Mastercard<br>
-        :if(this.getState('payment') === 'visa')
-          <h3>VISA</h3>
-          <p>Enter visa credentials here:</p>
-          <input type="text" placeholder="visa" name="credit" oninput="testShop.updateName(event)">
-        :fi
-        :if(this.getState('payment') === 'master')
-        <h3>MASTER</h3>
-          <p>Enter master credentials here:</p>
-          <input type="text" placeholder="master" name="credit" oninput="testShop.updateName(event)">
-        :fi
-        <button onclick="testShop.checkout()">Checkout</button>
-        <dialog id="checkout-dialog">
-          <button onclick="this.parentElement.close()">X</button>
-          <h3>Thank you for using TinyTemplateJs.</h3>
-          <p>This is a checkout...</p>
-          <p>You have to pay: <h3>[:js(this.getState('priceTotal'))$]</h3></p>
-          <ul>
-            <li>Payment method: :js(this.getState('payment'))</li>
-            <li>Name: :js(this.getState('name'))</li>
-          </ul>
-        </dialog>
-      </fieldset>
-    </div>
-  </script>
-
   <!-- Instantiate & parse -->
   <script src="test_shop.js"></script>
   <script>    
     let appNode = document.getElementById('app');
     let testShop = new TestShop(
-      appNode, 
-      'test-shop', 
-      { name: '',
+      appNode,
+      'test-shop',
+      {
+        name: '',
         items: [
           { product: 'Apple', price: '1' },
           { product: 'Banana', price: '2' },
           { product: 'Carrot', price: '3' },
           { product: 'Kiwi', price: '4' },
           { product: 'Bread', price: '5' }
-        ], 
-        cartItems: [], 
-        payment: 'visa', 
+        ],
+        cartItems: [],
+        payment: 'visa',
         priceTotal: 0
-    });
+      });
   </script>
 </body>
+
 </html>

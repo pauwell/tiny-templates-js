@@ -54,8 +54,9 @@ let myTemplate = new TinyTemplate(
     </for>
     <h3>Animals:</h3>
     <foreach elem="elem" idx="i" arr="arr" in="this.getState('animals')">
-      <div class="{{i}}"></div><!-- Fails -->
-      <p>#{{i}}: {{elem.name}},{{elem.name}} from List [{{ arr }}]!</p>
+      <div class="{{i}}">
+        <p>#{{i}}: {{elem.name}},{{elem.name}} from List [{{ arr }}]!</p>
+      </div>
     </foreach>
   </div>`
 );

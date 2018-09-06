@@ -11,6 +11,12 @@ module.exports = class TinyTemplate {
     this._state = state;
     this._methods = methods;
     this._rootNode = null;
+
+    for (let key in this._methods) {
+      if (this._methods.hasOwnProperty(key)) {
+        this._methods[key] = this._methods[key].bind(this);
+      }
+    }
   }
 
   /* Defines a root node and registers the template.
@@ -27,6 +33,9 @@ module.exports = class TinyTemplate {
 
   // If a state-value changes, the view must be reparsed.
   changeState(newState) {
+    console.log("Change state:");
+    console.log(newState);
+
     let hasChanged = false;
     for (let prop in newState) {
       hasChanged = true;
@@ -126,7 +135,9 @@ module.exports = class TinyTemplate {
 
         let loopElem = node.getAttribute("elem");
         let loopIdx = node.hasAttribute("idx") ? node.getAttribute("idx") : "_";
-        let loopArr = node.hasAttribute("arr") ? node.getAttribute("arr") : "_";
+        let loopArr = node.hasAttribute("arr")
+          ? node.getAttribute("arr")
+          : "__";
         let loopIn = node.getAttribute("in");
 
         let evaluateInContext = new Function(
@@ -142,9 +153,17 @@ module.exports = class TinyTemplate {
               newNode.appendChild(clonedNode);
               clonedNode.outerHTML = parseLocalMustaches(
                 clonedNode.outerHTML, [
-                  {key: '${loopElem}', value: ${loopElem}},
-                  {key: '${loopIdx}', value: ${loopIdx}},
-                  {key: '${loopArr}', value: ${loopArr}}
+                  {key: '${loopElem}', value: ${loopElem}}
+                  ${
+                    loopIdx !== "_"
+                      ? `,{key: '${loopIdx}', value: ${loopIdx}}`
+                      : ""
+                  }
+                  ${
+                    loopArr !== "__"
+                      ? `,{key: '${loopArr}', value: ${loopArr}},`
+                      : ""
+                  }
                 ]
               );
             });
@@ -156,20 +175,6 @@ module.exports = class TinyTemplate {
         node.parentNode.replaceChild(newNode, node);
       }
 
-      //> Parse event handlers on nodes.
-      let eventNodes = parsedNodes.querySelectorAll("*[on-event][call]");
-      for (let node of eventNodes) {
-        let eventVar = node.getAttribute("on-event");
-        let methodVar = node.getAttribute("call");
-
-        if (eventVar.length !== 0 && this.methods().hasOwnProperty(methodVar)) {
-          node.addEventListener(eventVar, this.methods()[methodVar].bind(this));
-        }
-
-        node.removeAttribute("on-event");
-        node.removeAttribute("call");
-      }
-
       // Stop parsing if the maximum number of iterations was reached.
       if (countIterations >= maxIterations) {
         console.error(
@@ -178,7 +183,11 @@ module.exports = class TinyTemplate {
       }
 
       // If there are no more nodes left stop parsing.
-      if (ifNodes.length === 0 && forNodes.length === 0) {
+      if (
+        ifNodes.length === 0 &&
+        forNodes.length === 0 &&
+        foreachNodes.length === 0
+      ) {
         parsingIsActive = false;
       }
     }
@@ -211,6 +220,50 @@ module.exports = class TinyTemplate {
       }
 
       this._activeNodes = updatedNodes;
+    }
+
+    // @ IDEA: Parse the event-handlers here, after the diffDOM algorithm.
+    // This way it can not patch away the event listeners.
+    let eventNodes = this._rootNode.firstChild.querySelectorAll(
+      "*[on-event][call]"
+    );
+
+    for (let node of eventNodes) {
+      let eventVar = node.getAttribute("on-event");
+      let methodVar = node.getAttribute("call");
+      let parsedArgs = [];
+
+      if (node.hasAttribute("args")) {
+        let argsVar = node.getAttribute("args");
+
+        // Cut off braces.
+        if (argsVar.startsWith("(")) {
+          argsVar = argsVar.substr(1);
+        }
+        if (argsVar.endsWith(")")) {
+          argsVar = argsVar.substr(0, argsVar.length - 1);
+        }
+        if (argsVar.indexOf(",") !== -1) {
+          // @ Todo: Replace eval. Check for errors.
+          parsedArgs = argsVar.split(",").map(val => eval(val));
+        } else {
+          let evaluated = eval(argsVar);
+          if (evaluated !== undefined) {
+            parsedArgs.push(evaluated);
+          }
+        }
+      }
+
+      if (
+        node.getAttribute("parsed") === null &&
+        eventVar.length !== 0 &&
+        this.methods().hasOwnProperty(methodVar)
+      ) {
+        node[eventVar] = this.methods()[methodVar].bind(this, ...parsedArgs);
+      }
+
+      node.removeAttribute("on-event");
+      node.removeAttribute("call");
     }
   }
 };
