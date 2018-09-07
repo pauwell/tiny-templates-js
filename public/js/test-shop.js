@@ -52,70 +52,99 @@ let testShop = new TinyTemplate(
   /*html*/ `
   <div class="test-shop">
     <h1>Test Shop</h1> 
+    <p><a class="mdl-button" href="javascript:void(0);" onclick="startIntro()">Short introduction</a></p>
     <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone" id="intro-step1">
+      <h3>Buy items</h3>
       <ul class="mdl-list">
         <foreach elem="item" idx="idx" in="this.getState('items')">
           <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-              <i class="material-icons mdl-list__item-icon">monetization_on</i>
-              {{item.product}} - {{item.price}}$
-              <button on-event="onclick" call="buy" args="{{idx}}">+</button>
+              {{item.product}}
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <span>{{item.price}}$</span>
+              <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" on-event="onclick" call="buy" args="{{idx}}">
+                <i class="material-icons">shopping_cart</i>
+              </button>
             </span>
           </li>
         </foreach>
       </ul>
       </div>
-      <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
+      <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone" id="intro-step2">
+      <h3>Cart</h3>
       <ul class="mdl-list">
         <foreach elem="item" idx="idx" in="this.getState('cartItems')">
           <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-              <i class="material-icons mdl-list__item-icon">shopping_cart</i>
-              {{item.product}} - {{item.price}}$
-              <button on-event="onclick" call="removeItem" args="{{idx}}">-</button>
+              <i class="material-icons mdl-list__item-icon">done</i>
+              {{item.product}}
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <span>{{item.price}}$</span>
+              <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent" on-event="onclick" call="removeItem" args="{{idx}}">
+                <i class="material-icons">remove_circle</i>
+              </button>
             </span>
           </li>
         </foreach>
       </ul>
-        <hr>Total <b>{{priceTotal}}$</b>
-        <button on-event="onclick" call="removeAllItems">Alle entfernen</button>
+        <p>
+          Total <b>{{priceTotal}}$</b>
+          <if expr="{{cartItems.length}} > 0">
+            <button class="mdl-button mdl-button--accent" on-event="onclick" call="removeAllItems">Alle entfernen</button>
+          </if>
+        </p>
       </div>
       <div class="mdl-cell mdl-cell--4-col mdl-cell--4-col-phone">
-        <div class="demo-card-square mdl-card mdl-shadow--2dp">
+        <h3>Checkout</h3>
+        <div class="demo-card-square mdl-card mdl-shadow--2dp" id="intro-step3">
           <div class="mdl-card__title mdl-card--expand">
-            <h2 class="mdl-card__title-text">Checkout</h2>
+            <h2 class="mdl-card__title-text">Overview</h2>
           </div>
           <div class="mdl-card__supporting-text">
             <label>Payment method</label><br>
-            <button on-event="onclick" call="changeState" args="{payment: 'visa'}">Visa</button>
-            <button on-event="onclick" call="changeState" args="{payment: 'master'}">Mastercard</button>
-            <p>Payment: {{payment}}</p>
+            <button class="mdl-button" on-event="onclick" call="changeState" args="{payment: 'visa'}">Visa</button>
+            <button class="mdl-button" on-event="onclick" call="changeState" args="{payment: 'master'}">Mastercard</button>
             <if expr="'{{payment}}' === 'visa'">
               <h3>VISA</h3>
-              <p>Enter visa credentials for {{name}} here:</p>
-              <input type="text" placeholder="visa" name="credit" value="{{name}}" on-event="oninput" call="updateName">
+              <p>Enter your name here:</p>
+              <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="credit" value="{{name}}" on-event="oninput" call="updateName">
+              </div>
+              <p>{{name}}</p>
             </if>
             <if expr="'{{payment}}' === 'master'">
             <h3>MASTER</h3>
-              <p>Enter master credentials here:</p>
-              <input type="text" placeholder="master" name="credit" value="{{name}}" on-event="oninput" call="updateName">
+              <p>Enter your name here:</p>
+              <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="credit" value="{{name}}" on-event="oninput" call="updateName">
+              </div>
+              <p>{{name}}</p>
             </if>
-            <dialog id="checkout-dialog">
-              <button onclick="this.parentElement.close()">X</button>
-              <h3>Thank you for using TinyTemplateJs.</h3>
-              <p>This is a checkout...</p>
-              <p>You have to pay: <h3>{{priceTotal}}$</h3></p>
-              <ul>
-                <li>Payment method: {{payment}}</li>
-                <li>Name: {{name}}</li>
-              </ul>
+            <dialog class="mdl-dialog" id="checkout-dialog">
+              <h4 class="mdl-dialog__title">Thank you!</h4>
+              <div class="mdl-dialog__content">
+                <p>Checking out...</p>
+                <p>Price total: <h3>{{priceTotal}}$</h3></p>
+                <ul class="mdl-list">
+                  <li class="mdl-list__item">Name: {{name}}</li>
+                  <li class="mdl-list__item">Payment: {{payment}}</li>
+                </ul>
+              </div>
+              <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button">Pay</button>
+                <button type="button" class="mdl-button  mdl-button--accent" onclick="this.parentElement.parentElement.close()">Abort</button>
+              </div>
             </dialog>
           </div>
           <div class="mdl-card__actions mdl-card--border">
-            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" on-event="onclick" call="checkout">
-              Checkout
-            </a>
+            <if expr="{{name.length}} > 0 && {{cartItems.length}} > 0">
+              <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" on-event="onclick" call="checkout">
+                Checkout
+              </a>
+            </if>
           </div>
         </div>
       </div>
@@ -124,3 +153,34 @@ let testShop = new TinyTemplate(
 );
 
 testShop.mount(document.getElementById("test-shop-container"));
+
+// Test intro js.
+let startIntro = function() {
+  var intro = introJs();
+  intro.setOptions({
+    steps: [
+      {
+        element: "#intro-step1",
+        intro: /*html*/ `<div style="direction: ltr;">
+&lt;ul&gt;
+  &lt;foreach elem="item" idx="idx" in="this.getState('items')"&gt;
+    &lt;li&gt;
+      &lt;span>{{item.product}}&lt;/span&gt;
+      &lt;span>{{item.price}}$&lt;/span&gt;
+      &lt;button on-event="onclick" call="buy" args="{{idx}}"&gt;&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/foreach&gt;
+&lt;/ul&gt;</div>`,
+        position: "right"
+      },
+      { element: "#intro-step2", intro: "Ok, <i>wasn't</i> that fun?" },
+      {
+        element: "#intro-step3",
+        intro:
+          'More features, more <span style="color: red;">f</span><span style="color: green;">u</span><span style="color: blue;">n</span>.',
+        position: "left"
+      }
+    ]
+  });
+  intro.start();
+};

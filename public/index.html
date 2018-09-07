@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <!-- intro js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs-rtl.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css" />
 </head>
 
 <body>
@@ -19,33 +23,37 @@
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-title">Tiny Templates JS</span>
+        <i class="material-icons">donut_small</i>
+        <span class="mdl-layout-title">Tiny Templates JS</span>&nbsp;
+        <a class="social-btn social-btn__github" role="button" href="https://github.com/pauwell/tiny-templates-js">GitHub</a>
       </div>
       <!-- Tabs -->
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-        <a href="#fixed-tab-1" class="mdl-layout__tab is-active">Hello World</a>
-        <a href="#fixed-tab-2" class="mdl-layout__tab">Test Shop</a>
-        <a href="#fixed-tab-3" class="mdl-layout__tab">Single Examples</a>
+        <a href="#hello-world-tab" class="mdl-layout__tab">Hello World</a>
+        <a href="#test-shop-tab" class="mdl-layout__tab is-active">Test Shop</a>
+        <a href="#single-examples-tab" class="mdl-layout__tab">Single Examples</a>
       </div>
     </header>
     <!--<div class="mdl-layout__drawer">
       <span class="mdl-layout-title">Title</span>
     </div>-->
     <main class="mdl-layout__content">
-      <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+      <section class="mdl-layout__tab-panel" id="hello-world-tab">
         <div class="page-content">
           <!-- Hello World tab -->
+          <p>Under construction..</p>
         </div>
       </section>
-      <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+      <section class="mdl-layout__tab-panel is-active" id="test-shop-tab">
         <div class="page-content">
           <!-- Test Shop tab -->
           <div id="test-shop-container"></div>
         </div>
       </section>
-      <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+      <section class="mdl-layout__tab-panel" id="single-examples-tab">
         <div class="page-content">
           <!-- Single Examples tab -->
+          <p>Under construction..</p>
         </div>
       </section>
     </main>
