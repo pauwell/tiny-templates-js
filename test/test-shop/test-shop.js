@@ -3,7 +3,7 @@
 let testShop = new TinyTemplate(
   "test-shop",
   {
-    name: "test-shop",
+    name: "",
     items: [
       { product: "Apple", price: "1" },
       { product: "Banana", price: "2" },
@@ -36,7 +36,6 @@ let testShop = new TinyTemplate(
       document.getElementById("checkout-dialog").showModal();
     },
     removeItem(index) {
-      console.log("Remove item " + index);
       let tmp = this.getState("cartItems");
       tmp.splice(index, 1);
       this.changeState({ cartItems: tmp });
@@ -51,7 +50,8 @@ let testShop = new TinyTemplate(
     }
   },
   /*html*/ `
-  <div class="test-shop"> 
+  <div class="test-shop">
+    <h1>Test Shop</h1> 
     <fieldset class="buy">
       <legend><h3>Buy</h3></legend>
       <ul>
@@ -69,7 +69,6 @@ let testShop = new TinyTemplate(
         <div>
           <div class="cart-product">{{item.product}}</div>
           <div class="cart-price">{{item.price}}</div>
-          <button on-event="onclick" call="removeAllItems">awd</button>
           <button on-event="onclick" call="removeItem" args="{{idx}}">-</button>
         </div>
       </foreach>
@@ -82,69 +81,31 @@ let testShop = new TinyTemplate(
     <fieldset class="checkout">
       <legend><h3>Checkout</h3></legend>
       <label>Payment method</label><br>
-      <select>
-        <option on-event="onselect" call="changeState" args="{payment: 'visa'}">Visa</option>
-        <option on-event="onselect" call="changeState" args="{payment: 'master'}">Mastercard</option>
-      </select>
-      <input type="radio" value="visa" name="pay" on-event="onselect" call="changeState" args="{payment: 'visa'}" checked>Visa<br><!-- Doesnt work. -->
-      <input type="radio" value="master" name="pay" on-event="onselect" call="changeState" args="{payment: 'master'}">Mastercard<br>
+      <button on-event="onclick" call="changeState" args="{payment: 'visa'}">Visa</button>
+      <button on-event="onclick" call="changeState" args="{payment: 'master'}">Mastercard</button>
       <p>Payment: {{payment}}</p>
       <if expr="'{{payment}}' === 'visa'">
         <h3>VISA</h3>
         <p>Enter visa credentials for {{name}} here:</p>
         <input type="text" placeholder="visa" name="credit" value="{{name}}" on-event="oninput" call="updateName">
-        <input type="text" placeholder="visa" name="credit" oninput="testShop.updateName(event)">
       </if>
       <if expr="'{{payment}}' === 'master'">
       <h3>MASTER</h3>
         <p>Enter master credentials here:</p>
-        <input type="text" placeholder="master" name="credit" oninput="testShop.updateName(event)">
+        <input type="text" placeholder="master" name="credit" value="{{name}}" on-event="oninput" call="updateName">
       </if>
       <button on-event="onclick" call="checkout">Checkout</button>
       <dialog id="checkout-dialog">
         <button onclick="this.parentElement.close()">X</button>
         <h3>Thank you for using TinyTemplateJs.</h3>
         <p>This is a checkout...</p>
-        <p>You have to pay: <h3>[:js(this.getState('priceTotal'))$]</h3></p>
+        <p>You have to pay: <h3>{{priceTotal}}$</h3></p>
         <ul>
-          <li>Payment method: :js(this.getState('payment'))</li>
-          <li>Name: :js(this.getState('name'))</li>
+          <li>Payment method: {{payment}}</li>
+          <li>Name: {{name}}</li>
         </ul>
       </dialog>
     </fieldset>
-  </div>
-
-
-
-
-
-
-  <div id="my-template">
-    <button on-event="click" call="increaseAge">Increment age</button>
-    <p id="lvl-1">[Lvl-1]</p> 
-    <if expr="1==1">
-      <div id="content">
-          <if expr="1==1">
-            <p id="lvl-2a">[Lvl-2a] Name: {{name}}</p>
-          </if> 
-          <if expr="2==2">
-            <p id="lvl-2b">[Lvl-2b] Age: {{age}}</p> 
-          </if> 
-      </div>
-    </if>
-    <button on-event="click" call="increaseCounter">Update counter {{ counter }}</button>
-    <for var="j" from="0" to="{{counter}}" step="1">
-      <hr>
-      <b>Hello this is {{ j }}</b>
-      <div>
-        <for var="i" from="{{age}}" to="{{age}} + 10" step="1">
-          <p>Brand new syntax with mustache: {{name}}, {{ j }},{{ i }}!!</p>
-        </for>
-      </div>
-    </for>
-    <for each="elem" in="list">
-      <p>Hi</p>
-    </for>
   </div>`
 );
 

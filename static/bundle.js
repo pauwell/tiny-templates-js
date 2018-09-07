@@ -1604,9 +1604,9 @@ module.exports = class TinyTemplate {
 
   // If a state-value changes, the view must be reparsed.
   changeState(newState) {
-    console.log("Change state:");
-    console.log(newState);
-
+    if (typeof newState == "string") {
+      newState = eval("(" + newState + ")"); // @ Todo: Replace eval.
+    }
     let hasChanged = false;
     for (let prop in newState) {
       hasChanged = true;
@@ -1793,7 +1793,7 @@ module.exports = class TinyTemplate {
       this._activeNodes = updatedNodes;
     }
 
-    // @ IDEA: Parse the event-handlers here, after the diffDOM algorithm.
+    // Parse the event-handlers here, after the diffDOM patching.
     // This way it can not patch away the event listeners.
     let eventNodes = this._rootNode.firstChild.querySelectorAll(
       "*[on-event][call]"
@@ -1815,22 +1815,20 @@ module.exports = class TinyTemplate {
           argsVar = argsVar.substr(0, argsVar.length - 1);
         }
         if (argsVar.indexOf(",") !== -1) {
-          // @ Todo: Replace eval. Check for errors.
-          parsedArgs = argsVar.split(",").map(val => eval(val));
+          parsedArgs = argsVar.split(",").map(val => eval(val)); // @Todo: Replace eval.
         } else {
-          let evaluated = eval(argsVar);
+          let evaluated = argsVar.indexOf("{") === -1 ? eval(argsVar) : argsVar;
+
           if (evaluated !== undefined) {
             parsedArgs.push(evaluated);
           }
         }
       }
 
-      if (
-        node.getAttribute("parsed") === null &&
-        eventVar.length !== 0 &&
-        this.methods().hasOwnProperty(methodVar)
-      ) {
+      if (eventVar.length !== 0 && this.methods().hasOwnProperty(methodVar)) {
         node[eventVar] = this.methods()[methodVar].bind(this, ...parsedArgs);
+      } else if (eventVar.length !== 0) {
+        node[eventVar] = this[methodVar].bind(this, ...parsedArgs);
       }
 
       node.removeAttribute("on-event");
