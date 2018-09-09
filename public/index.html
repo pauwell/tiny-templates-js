@@ -14,6 +14,43 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs-rtl.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css" />
+
+  <style>
+    .gist .highlight {
+      font-size: 14px !important;
+    }
+
+    #welcome-tab section {
+      padding: 30px 0;
+    }
+
+    #welcome-tab h3 {
+      text-align: center;
+    }
+
+    #welcome-tab p {
+      text-align: justify;
+      margin: 10px auto;
+    }
+
+    #welcome-tab button {
+      width: 100%;
+      height: 60px;
+    }
+
+    #welcome-tab .centered-text {
+      text-align: center;
+    }
+
+    #welcome-tab button {
+      border-radius: 40px;
+    }
+
+    #welcome-tab .button-border {
+      border: 2px solid darkgray;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -29,31 +66,112 @@
       </div>
       <!-- Tabs -->
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-        <a href="#hello-world-tab" class="mdl-layout__tab">Hello World</a>
-        <a href="#test-shop-tab" class="mdl-layout__tab is-active">Test Shop</a>
-        <a href="#single-examples-tab" class="mdl-layout__tab">Single Examples</a>
+        <a href="#welcome-tab" class="mdl-layout__tab is-active">Welcome</a>
+        <a href="#introduction-tab" class="mdl-layout__tab">Introduction</a>
+        <a href="#example-tab" class="mdl-layout__tab">Example</a>
+        <a href="#tutorial-tab" class="mdl-layout__tab">Tutorial</a>
       </div>
     </header>
-    <!--<div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Title</span>
-    </div>-->
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout__title">Blog posts</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="#">Coming soon..</a>
+      </nav>
+    </div>
     <main class="mdl-layout__content">
-      <section class="mdl-layout__tab-panel" id="hello-world-tab">
+      <section class="mdl-layout__tab-panel is-active" id="welcome-tab">
         <div class="page-content">
-          <!-- Hello World tab -->
-          <p>Under construction..</p>
+
+          <!-- Welcome tab -->
+          <div class="content mdl-grid mdl-grid--no-spacing">
+
+            <section class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+              <div class="content mdl-grid">
+                <h3 class="mdl-cell mdl-cell--12-col">Tiny Templates JS</h3>
+                <p class="centered-text mdl-cell mdl-cell--12-col">A tiny reactive template engine written in javascript.</p>
+                <div class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Get started!
+                  </button>
+                </div>
+                <div class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+                  <button class="button-border mdl-button mdl-js-button mdl-js-ripple-effect">
+                    GitHub
+                  </button>
+                </div>
+
+              </div>
+            </section>
+
+            <section class="mdl-cell mdl-cell--6-col mdl-cell--12-col-tablet">
+              <div class="content mdl-grid">
+                <h3 class="mdl-cell mdl-cell--12-col">Overview</h3>
+                <p class="mdl-cell mdl-cell--8-col">
+                  <em>TinyTemplates</em> is a tiny templating engine in javascript that lets you create reusable, reactive
+                  components that can be rendered and updated in the DOM. The templates are created by using a view that
+                  consists of the standard the HTML syntax combined with a few additional nodes that work as statements (<code>if</code>)
+                  or loops (<code>for</code>, <code>foreach</code>). Data, that needs to be reactive, is stored as <em>state</em>
+                  that embeds in the view to get updated if any changes are made to the data. <a href="https://github.com/fiduswriter/diffDOM">
+                  diffDOM</a> is used to detect and patch these changes in as few steps as possible. Please have a look at
+                  the example below for a better understanding of the syntax. </p>
+              </div>
+            </section>
+
+            <section class="mdl-cell mdl-cell--12-col mdl-color--grey-800 mdl-color-text--white">
+              <h3>Example</h3>
+              <div class="demo-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+                <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                  <p>
+                    <script src="https://gist.github.com/pauwell/1cec6514ab91a88bcc1241449b848e48.js"></script>
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+
         </div>
       </section>
-      <section class="mdl-layout__tab-panel is-active" id="test-shop-tab">
+      <section class="mdl-layout__tab-panel" id="introduction-tab">
         <div class="page-content">
-          <!-- Test Shop tab -->
+
+          <!-- Introduction tab -->
+          <main class="demo-main mdl-layout__content">
+            <div class="demo-container mdl-grid">
+              <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+              <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                <p>
+                  <script src="https://gist.github.com/pauwell/3533fd236c274de67d70981193868814.js"></script>
+                </p>
+              </div>
+            </div>
+          </main>
+
+        </div>
+      </section>
+      <section class="mdl-layout__tab-panel" id="example-tab">
+        <div class="page-content">
+
+          <!-- Example tab -->
           <div id="test-shop-container"></div>
+
         </div>
       </section>
-      <section class="mdl-layout__tab-panel" id="single-examples-tab">
+      <section class="mdl-layout__tab-panel" id="tutorial-tab">
         <div class="page-content">
-          <!-- Single Examples tab -->
-          <p>Under construction..</p>
+
+          <!-- Tutorial tab -->
+          <main class="demo-main mdl-layout__content">
+            <div class="demo-container mdl-grid">
+              <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
+              <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
+                <p>
+                  <script src="https://gist.github.com/pauwell/85f476bfd661bd0f501230ba528ab7f8.js"></script>
+                </p>
+              </div>
+            </div>
+          </main>
+
         </div>
       </section>
     </main>

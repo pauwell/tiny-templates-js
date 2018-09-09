@@ -25,12 +25,7 @@ We start off by creating an instance of <code>TinyTemplate</code> which is the b
 The constructor of <code>TinyTemplate</code> looks like this:
 
 ```js
-constructor(
-  name,
-  state, 
-  methods, 
-  stringView
-);
+constructor(name, state, methods, stringView);
 ```
 
 <p>It takes a <code>name</code> that is used to uniquely identify the template, a <code>state</code> object that contains all the reactive data members, the <code>methods</code> object, which stores all class-methods and the html-like <code>stringView</code>.
@@ -92,8 +87,7 @@ Double mustaches inside the <code>stringView</code> are replaced by their corres
 
 ### State-changes
 
-<p>If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine 
-registers changes in data, to only update specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont be update in the DOM.</p>
+<p>If you want to change any of the state variables (e.g. name), you need to call <code>this.setState({name: 'NewName'})</code>. This way the engine registers the specific changes to the data to only update the specific parts of the DOM that are affected by the change. If you change the state without the <code>setState()</code>-method, it wont update the DOM.</p>
 
 ```js
 this.changeState({ number: this.getState("number") + 1 });
@@ -179,6 +173,7 @@ The following...
     </span>
 </span>
 ```
+
 As you can see the <em>statement</em> nodes are replaced by a simple span.  
 Have fun building your own templates with tiny-templates-js.
 
