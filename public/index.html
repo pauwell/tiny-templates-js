@@ -14,6 +14,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs-rtl.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css" />
+  <!-- hightlight js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/handlebars.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css" />
+  <script>hljs.initHighlightingOnLoad();</script>
 
   <style>
     .gist .highlight {
@@ -67,7 +73,6 @@
       <!-- Tabs -->
       <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
         <a href="#welcome-tab" class="mdl-layout__tab is-active">Welcome</a>
-        <a href="#introduction-tab" class="mdl-layout__tab">Introduction</a>
         <a href="#example-tab" class="mdl-layout__tab">Example</a>
         <a href="#tutorial-tab" class="mdl-layout__tab">Tutorial</a>
       </div>
@@ -99,7 +104,10 @@
                     GitHub
                   </button>
                 </div>
-
+                <p class="centered-text mdl-cell mdl-cell--12-col">
+                  Download: <a href="../dist/tiny-templates-0.7.js" download>tiny-templates-0.7.js</a> |
+                  <a href="../dist/tiny-templates-0.7.min.js" download>tiny-templates-0.7.min.js</a>
+                </p>
               </div>
             </section>
 
@@ -112,8 +120,8 @@
                   consists of the standard the HTML syntax combined with a few additional nodes that work as statements (<code>if</code>)
                   or loops (<code>for</code>, <code>foreach</code>). Data, that needs to be reactive, is stored as <em>state</em>
                   that embeds in the view to get updated if any changes are made to the data. <a href="https://github.com/fiduswriter/diffDOM">
-                  diffDOM</a> is used to detect and patch these changes in as few steps as possible. Please have a look at
-                  the example below for a better understanding of the syntax. </p>
+                    diffDOM</a> is used to detect and patch these changes in as few steps as possible. Please have a look
+                  at the example below for a better understanding of the syntax. </p>
               </div>
             </section>
 
@@ -122,30 +130,45 @@
               <div class="demo-container mdl-grid">
                 <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
                 <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                  <p>
+                  <pre><code class="javascript">
+// Our example is a simple counter.
+let counter = new TinyTemplate(
+  // Name
+  "counter",
+  // State
+  {
+    number: 0
+  },
+  // Methods
+  {
+    increaseNumber: function() {
+      this.changeState({ number: this.getState("number") + 1 });
+    },
+    reset: function() {
+      this.changeState({ number: 0 });
+    }
+  },
+  // Template-view
+  `&lt;div class="counter&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;&lt;b&gt;Counter&lt;/b&gt;&lt;/legend&gt;
+        &lt;p&gt;Counting: {{number}}&lt;/p&gt;
+        &lt;button on-event="onclick" call="increaseNumber"&gt;Increment&lt;/button&gt;
+        &lt;button on-event="onclick" call="reset"&gt;Reset&lt;/button&gt;
+        &lt;/fieldset&gt;
+     &lt;/div&gt;`
+);
+
+// Mount the template to a root node to add it to the DOM.
+counter.mount(document.getElementById("root-node-id"));
+</code></pre>
+                  <!--<p>
                     <script src="https://gist.github.com/pauwell/1cec6514ab91a88bcc1241449b848e48.js"></script>
-                  </p>
+                  </p>-->
                 </div>
               </div>
             </section>
           </div>
-
-        </div>
-      </section>
-      <section class="mdl-layout__tab-panel" id="introduction-tab">
-        <div class="page-content">
-
-          <!-- Introduction tab -->
-          <main class="demo-main mdl-layout__content">
-            <div class="demo-container mdl-grid">
-              <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-              <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                <p>
-                  <script src="https://gist.github.com/pauwell/3533fd236c274de67d70981193868814.js"></script>
-                </p>
-              </div>
-            </div>
-          </main>
 
         </div>
       </section>
@@ -165,8 +188,39 @@
             <div class="demo-container mdl-grid">
               <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
               <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-                <p>
-                  <script src="https://gist.github.com/pauwell/85f476bfd661bd0f501230ba528ab7f8.js"></script>
+                <p class="mdl-cell mdl-cell--8-col">
+                  <pre><code class="javascript">
+// Our example is a simple counter.
+let counter = new TinyTemplate(
+  // Name
+  "counter",
+  // State
+  {
+    number: 0
+  },
+  // Methods
+  {
+    increaseNumber: function() {
+      this.changeState({ number: this.getState("number") + 1 });
+    },
+    reset: function() {
+      this.changeState({ number: 0 });
+    }
+  },
+  // Template-view
+  `&lt;div class="counter&gt;
+      &lt;fieldset&gt;
+        &lt;legend&gt;&lt;b&gt;Counter&lt;/b&gt;&lt;/legend&gt;
+        &lt;p&gt;Counting: {{number}}&lt;/p&gt;
+        &lt;button on-event="onclick" call="increaseNumber"&gt;Increment&lt;/button&gt;
+        &lt;button on-event="onclick" call="reset"&gt;Reset&lt;/button&gt;
+        &lt;/fieldset&gt;
+     &lt;/div&gt;`
+);
+
+// Mount the template to a root node to add it to the DOM.
+counter.mount(document.getElementById("root-node-id"));
+</code></pre>
                 </p>
               </div>
             </div>

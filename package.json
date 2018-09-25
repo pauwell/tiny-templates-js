@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/pauwell/tiny-templates-js#readme",
   "dependencies": {
-    "diff-dom": "^2.4.0",
-    "watchify": "^3.11.0"
+    "diff-dom": "^2.4.0"
   }
 }
